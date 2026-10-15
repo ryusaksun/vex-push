@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Vex 自建推送的日常使用：查看状态、添加另一台设备、更换密钥、更新 Worker、更新 Google 表格、检查频率与配额。">
+<title>日常使用 · Vex 自建推送</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"></span>Vex 自建推送</a>
+    <nav class="site-nav" aria-label="页面导航">
+      <ul>
+        <li><a href="index.html">首页</a></li>
+        <li><a href="setup.html">设置</a></li>
+        <li><a href="manage.html" aria-current="page">日常使用</a></li>
+        <li><a href="troubleshooting.html">常见提示与排查</a></li>
+        <li><a href="remove.html">停用与删除</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+  <h1>日常使用</h1>
+  <p class="lead">设置好以后：怎么看状态、加设备、换密钥、更新 Worker 和表格、配额够不够。大部分在 Vex 的「自建推送服务器」页上操作（<span class="ui">「设置 › 通知 › 自建推送服务器」</span>），少数在你的 Google 表格的「Vex 推送」菜单里。</p>
+
+  <nav class="toc" aria-labelledby="toc-title">
+    <p class="toc-title" id="toc-title">本页目录</p>
+    <ol>
+      <li><a href="#status">查看状态</a></li>
+      <li><a href="#active">推送生效与「新消息通知」</a></li>
+      <li><a href="#add-device">添加另一台设备</a></li>
+      <li><a href="#rotate">更换密钥</a></li>
+      <li><a href="#update-worker">更新 Worker</a></li>
+      <li><a href="#update-sheet">更新 Google 表格</a></li>
+      <li><a href="#sheet-menu">表格菜单里的其他几项</a></li>
+      <li><a href="#quota">检查频率与配额</a></li>
+      <li><a href="#content">推送的内容</a></li>
+    </ol>
+  </nav>
+
+  <h2 id="status">查看状态</h2>
+  <h3>Vex 里的状态页</h3>
+  <p>连上推送服务器后，「自建推送服务器」页从上到下依次是：</p>
+  <ol>
+    <li>还没收到过 Google 表格的状态时，一行待办 <span class="ui">「还差一步：设置 Google 表格」</span>（这台设备连不上时排到「状态」节后面）。</li>
+    <li><span class="ui">「状态」</span>一节，见下表。</li>
+    <li><span class="ui">「设置 Google 表格」</span>、<span class="ui">「更新 Worker」</span>、<span class="ui">「更换密钥」</span>。</li>
+    <li><span class="ui">「添加另一台设备」</span>、<span class="ui">「修改地址与密钥」</span>、<span class="ui">「停用推送」</span>。</li>
+    <li><span class="ui">「断开连接」</span>、<span class="ui">「移除推送服务器」</span>，最下面是隐私说明。</li>
+  </ol>
+
+  <div class="table-wrap">
+    <table class="stack">
+      <thead>
+        <tr><th scope="col">「状态」节里的行</th><th scope="col">怎么看</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row"><span class="ui">「状态」</span></th>
+          <td data-label="怎么看">正常是 <span class="ui">「已连接」</span>。其他取值（<span class="ui">「连接失败」</span>、<span class="ui">「通知已关闭」</span>等）见<a href="troubleshooting.html#status-row">排查页</a>。</td>
+        </tr>
+        <tr>
+          <th scope="row"><span class="ui">「Google 表格」</span></th>
+          <td data-label="怎么看">正常时形如 <span class="ui">「<var>N</var> 分钟前活动 · 每 <var>M</var> 分钟检查」</span>（不到 1 分钟写 <span class="ui">「刚刚活动」</span>，更久的按小时、天）。表格每小时才报一次运行状态，显示几十分钟前活动是正常的；「每 <var>M</var> 分钟检查」是表格现在实际的检查间隔。时间按推送服务器的时钟算，不受手机时间影响。下面可能出现的提示见<a href="troubleshooting.html#sheet-notes">排查页</a>。</td>
+        </tr>
+        <tr>
+          <th scope="row"><span class="ui">「推送环境」</span></th>
+          <td data-label="怎么看"><span class="ui">「生产」</span>或 <span class="ui">「开发」</span>。App Store 与 TestFlight 版的 Vex 是生产环境。</td>
+        </tr>
+        <tr>
+          <th scope="row"><span class="ui">「上次注册时间」</span></th>
+          <td data-label="怎么看">最近一次成功在推送服务器上注册本机的时间。Vex 回到前台时，超过 24 小时会自动续期；超过 7 天没续上，就不再算推送生效。</td>
+        </tr>
+        <tr>
+          <th scope="row"><span class="ui">「发送测试推送」</span></th>
+          <td data-label="怎么看">只在 <span class="ui">「已连接」</span>时能点，只发给这台设备。成功时显示 <span class="ui">「测试推送已发出，稍后应收到「Vex 推送测试」通知」</span>；失败原因见<a href="troubleshooting.html#test-push">排查页</a>。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Vex 在这些时候读取 Google 表格的状态：打开这一页时、停在这一页上回到前台时、每次注册或续期成功之后，以及回到前台且上次读到的记录已超过 30 分钟时。</p>
+
+  <h3 id="sheet-status">表格里的「查看状态」</h3>
+  <p>在表格菜单点 <span class="ui">「Vex 推送 › 查看状态」</span>。它只读表格自己的记录，不发网络请求。第一行是下面四种之一：</p>
+  <ul>
+    <li><span class="ui">「正在运行（每 <var>N</var> 分钟）」</span></li>
+    <li><span class="ui">「已暂停」</span>，第二行写着恢复办法</li>
+    <li><span class="ui">「已暂停：推送服务器不认这份表格里的密钥（401）」</span>，见<a href="#rotate">更换密钥</a></li>
+    <li><span class="ui">「还没有设置」</span></li>
+  </ul>
+  <p>之后依次可能有：最近 24 小时用量、推送服务器不认密钥的说明、推送没送出去的说明、最近一次错误、Worker 主机名、账号标签和脚本版本。它不显示密钥与 feed 地址。</p>
+  <div class="callout callout-warn">
+    <strong class="callout-title">截图求助前先遮掉</strong>
+    <p>「查看状态」里的 Worker 主机名（你的 workers.dev 地址）和账号标签（一般是 V2EX 用户名），以及设置总结里设备名后面的推送令牌末 8 位（总结里写作「令牌末 8 位」），发截图前请遮掉。</p>
+  </div>
+
+  <h2 id="active">推送生效与「新消息通知」</h2>
+  <p>推送生效时，Vex 自带的「新消息通知」后台检查不再发本地的「你有 N 条新消息」，免得和推送重复；已知计数和图标角标照常更新。推送算生效，要同时满足：</p>
+  <ul>
+    <li>这台设备连着推送服务器，7 天内在上面注册过，注册的地址与本机推送令牌都对得上；</li>
+    <li>Google 表格 6 小时内向推送服务器报到过，而且报的不是出错；</li>
+    <li>表格报到用的是推送服务器现在的密钥（换过密钥的，还要在换密钥之后报到过）。</li>
+  </ul>
+  <p>任一条不满足（例如表格没接通、停了超过 6 小时、读 feed 失败、推送送不出去、注册过期），Vex 就照常发自带的通知；前提是你打开了「新消息通知」开关，它关着时没有后台检查。状态页上的说明分两种：</p>
+  <ul>
+    <li>表格还没接通、停了，或者换密钥后还没报到：<span class="ui">「推送服务器已就绪，但还没有东西在检查新提醒；现在仍用 Vex 自带的新消息通知。」</span></li>
+    <li>表格在报错（读 feed 失败、推送送不出去等）：<span class="ui">「Google 表格恢复正常之前，仍用 Vex 自带的新消息通知。」</span>原因见「Google 表格」一行下面的提示。</li>
+  </ul>
+  <div class="callout callout-note">
+    <strong class="callout-title">已知的空档</strong>
+    <p>Vex 要等下次读到表格状态，才知道表格停了或开始报错。在别的设备上更换了密钥之后，这台设备要等下次续期、读表格状态、打开状态页或发测试推送时才发现密钥不对；在那之前推送和自带通知都收不到。一直没打开 Vex（或一直连不上推送服务器，比如在中国大陆没开代理）的，要等注册满 7 天才恢复自带通知。</p>
+  </div>
+
+  <h2 id="add-device">添加另一台设备</h2>
+  <p>一台推送服务器可以连多台设备（最多 20 台），它们共用同一份 Google 表格。</p>
+  <ol class="steps">
+    <li>在<strong>已连接的设备</strong>上，「自建推送服务器」页点 <span class="ui">「添加另一台设备」</span>。</li>
+    <li>点 <span class="ui">「拷贝配置码」</span>（10 分钟后自动从剪贴板清除），或点 <span class="ui">「分享」</span>发给自己。</li>
+    <li>在<strong>新设备</strong>的 Vex 里打开 <span class="ui">「设置 › 通知 › 自建推送服务器」</span>，点 <span class="ui">「已经有推送服务器」</span>。</li>
+    <li>在 <span class="ui">「配置码」</span>一节点系统的 <span class="ui">「粘贴」</span>按钮；或者把配置码粘贴到框里（占位文字 <span class="ui">「也可以粘贴到这里」</span>），点 <span class="ui">「使用配置码」</span>。页面下面那节 <span class="ui">「或者填写地址与密钥」</span>用不着，粘贴配置码就行。</li>
+    <li>连上后自动退回上一页，那里就是状态页了。失败时留在本页，下面的状态节写着原因。</li>
+  </ol>
+  <p>这份配置码里只有推送服务器的地址和密钥，不含 feed 地址，生成时也不请求 V2EX。用粘贴按钮收下后，Vex 会清空剪贴板。粘贴的内容有问题时的提示见<a href="troubleshooting.html#config-code">排查页</a>。</p>
+
+  <h3 id="new-phone">换了手机、从备份恢复之后</h3>
+  <p>推送密钥只存在原来那台设备的钥匙串里，不随备份迁移。这时页面会写：</p>
+  <div class="app-text">
+    <p>「这台设备上没有保存密钥（换了手机或从备份恢复之后会这样）。在已连接的设备上点「添加另一台设备」，把配置码拷过来粘贴；或者重新部署。」</p>
+  </div>
+  <ul>
+    <li>还有已连接的设备：照上面的步骤拿配置码，在这一页点 <span class="ui">「粘贴配置码」</span>。</li>
+    <li>一台都没有了：点 <span class="ui">「重新部署」</span>，走一遍<a href="setup.html#step1">第 1 步</a>。这会换新密钥，之后在原来那份 Google 表格里点 <span class="ui">「第 2 步：粘贴配置码」</span>重新粘贴（表格也可以用 <span class="ui">「添加另一台设备」</span>里拷贝的配置码）。</li>
+  </ul>
+
+  <h2 id="rotate">更换密钥</h2>
+  <p><strong>什么时候用</strong>：配置码或推送密钥可能泄露了（例如发错了人、传配置码的聊天记录没删）。状态页这三个按钮下面写着：</p>
+  <div class="app-text">
+    <p>「更新 Worker 沿用现在的密钥。更换密钥之后，其他设备和 Google 表格要重新粘贴配置码；配置码泄露时用它。」</p>
+  </div>
+  <div class="callout callout-warn">
+    <strong class="callout-title">泄露的是给表格的那份配置码？</strong>
+    <p>那份配置码里还有 feed 地址，只换密钥不够。先到 V2EX 提醒页 <a href="remove.html#v2ex-token">「重新生成 Token」</a>让旧地址作废，再做下面的更换密钥；第 4 步改为在 Vex 的状态页点 <span class="ui">「设置 Google 表格」</span>，把带新 feed 地址的配置码粘贴到原来那份表格里（点 <span class="ui">「第 2 步：粘贴配置码」</span>）。这样表格只用粘贴一次。</p>
+  </div>
+  <ol class="steps">
+    <li>
+      <span class="step-title">在状态页点「更换密钥」</span>
+      <p>向导标题是 <span class="ui">「更换密钥」</span>：<span class="ui">「重新部署并换一个新密钥。做完之后，其他设备和 Google 表格要重新粘贴配置码才能继续使用；配置码泄露时用它。」</span>照<a href="setup.html#step1">第 1 步</a>创建并粘贴 Cloudflare 令牌，令牌要选推送服务器所在的那个 Cloudflare 账号。</p>
+    </li>
+    <li>
+      <span class="step-title">Vex 先核对，再换</span>
+      <p>Vex 先确认账号里的 <code>vex-push</code> 就是这台设备连着的那一台，确认不了就停下、什么都不改（例如提示连不上它时，先开代理再重试）。确认之后用新密钥重新部署，这台设备自动用新密钥重新连接。</p>
+    </li>
+    <li>
+      <span class="step-title">在结果页拿到新的配置码</span>
+      <p>结果页顶部写 <span class="ui">「密钥已更换」</span>，并有一节 <span class="ui">「密钥已更换：在 Google 表格和其他设备里重新粘贴配置码。」</span>，带 <span class="ui">「拷贝配置码」</span>和 <span class="ui">「分享」</span>。用 <span class="ui">「分享」</span>发出的文字里写明了表格和其他设备分别在哪里粘贴。</p>
+    </li>
+    <li>
+      <span class="step-title">先粘贴到 Google 表格</span>
+      <p>在表格菜单点 <span class="ui">「Vex 推送 › 第 2 步：粘贴配置码」</span>，粘贴新的配置码，点 <span class="ui">「确定」</span>。注意不能留空确定：留空沿用的是旧密钥，会被推送服务器拒绝。</p>
+    </li>
+    <li>
+      <span class="step-title">再到其他设备上粘贴</span>
+      <p>在其他设备的「自建推送服务器」页点 <span class="ui">「修改地址与密钥」</span>（已断开的点 <span class="ui">「粘贴配置码」</span>），粘贴。页面下面那节 <span class="ui">「或者填写地址与密钥」</span>用不着，粘贴配置码就行。这份配置码之后也能在 <span class="ui">「添加另一台设备」</span>里再拷贝。</p>
+    </li>
+    <li>
+      <span class="step-title">到 Cloudflare 删除这次的令牌</span>
+      <p>照结果页的 <span class="ui">「待办」</span>做，见<a href="setup.html#result">结果页与待办</a>。</p>
+    </li>
+  </ol>
+
+  <h3>换完之后会发生什么</h3>
+  <ul>
+    <li>表格换上新密钥之前，哪台设备都收不到推送。这期间状态页提示 <span class="ui">「更换密钥之后 Google 表格还没有来报到：在表格里点「第 2 步：粘贴配置码」，粘贴「添加另一台设备」里的配置码。」</span>，Vex 自带的新消息通知照常。</li>
+    <li>从换密钥到表格粘贴好新配置码之间来的提醒不会补推：重新粘贴时，当时 feed 里已有的提醒都记为已读。</li>
+    <li>没粘贴新配置码的设备从下一条推送起就收不到了。Vex 发现后，那台设备显示 <span class="ui">「连接失败」</span>，并写明出路：<span class="ui">「推送服务器不认本机保存的密钥，多半是在别的设备上更换过密钥：在那台设备上点「添加另一台设备」拷贝配置码，再在这台设备上点「修改地址与密钥」粘贴。」</span></li>
+    <li>还拿着旧密钥的表格副本会被推送服务器拒绝，一般一两个小时内自动暂停检查，「查看状态」第一行写 <span class="ui">「已暂停：推送服务器不认这份表格里的密钥（401）」</span>。要继续用它，粘贴新的配置码即可恢复。</li>
+  </ul>
+
+  <h2 id="update-worker">更新 Worker</h2>
+  <p><strong>什么时候用</strong>：状态页出现 <span class="ui">「Worker 有新版。」</span>（旁边有 <span class="ui">「更新 Worker」</span>按钮），或者「Google 表格」一行写着 <span class="ui">「Worker 版本较旧」</span>。</p>
+  <ol class="steps">
+    <li>点 <span class="ui">「更新 Worker」</span>。向导标题是 <span class="ui">「更新 Worker」</span>：<span class="ui">「把 Vex 自带的最新版 Worker 部署到你的 Cloudflare 账号里。密钥不变，其他设备和 Google 表格不受影响。」</span></li>
+    <li>照<a href="setup.html#step1">第 1 步</a>创建并粘贴 Cloudflare 令牌（推送服务器所在的那个账号）。</li>
+    <li>做完后结果页写 <span class="ui">「Worker 已更新」</span>：<span class="ui">「推送服务器已经是 Vex 自带的这一版。」</span>Vex 还会顺便读一次表格的状态。</li>
+    <li>照结果页的 <span class="ui">「待办」</span>删除这次的 Cloudflare 令牌。</li>
+  </ol>
+  <p>等不到上线时，这里的按钮是 <span class="ui">「继续等待」</span>和 <span class="ui">「先不等了」</span>：<span class="ui">「Worker 已经上传。是否上线，回到状态页可以再看。」</span></p>
+  <div class="callout callout-note">
+    <strong class="callout-title">提示「推送服务器比这个 Vex 自带的版本新」</strong>
+    <p>状态页在 <span class="ui">「更换密钥」</span>下面写着 <span class="ui">「推送服务器比这个 Vex 自带的版本新，请先更新 Vex（App Store）再操作。」</span>时，说明你在别的设备上用更新的 Vex 部署过。先到 App Store 把这台设备上的 Vex 更新到最新版，再做「更新 Worker」或「更换密钥」，否则可能把推送服务器换回旧版：Vex 上传之前会先问推送服务器的版本，问到比自带的新就停下、什么都不改；但问不到时（例如在中国大陆没开代理）拦不住。</p>
+  </div>
+
+  <h2 id="update-sheet">更新 Google 表格</h2>
+  <p>你的表格是从模板制作的副本，<strong>模板更新后，旧副本不会自动更新</strong>。有新版时，状态页「Google 表格」一行下面会提示：</p>
+  <div class="app-text">
+    <p>「Google 表格有新版：先在旧表格里点「暂停推送」，再建立新副本、粘贴配置码。」</p>
+  </div>
+  <p>更新的做法是从模板重新制作一份副本，顺序如下：</p>
+  <ol class="steps">
+    <li>
+      <span class="step-title">先在旧表格里暂停</span>
+      <p>打开旧表格，菜单点 <span class="ui">「Vex 推送 › 暂停推送」</span>，在确认框里点确定。</p>
+    </li>
+    <li>
+      <span class="step-title">在 Vex 里重新设置表格</span>
+      <p>点提示旁边的 <span class="ui">「去设置」</span>，或状态页的 <span class="ui">「设置 Google 表格」</span>，照<a href="setup.html#step2">第 2 步</a>从模板制作新副本。新副本要重新做 <span class="ui">「第 1 步：授权（只需一次）」</span>，再 <span class="ui">「第 2 步：粘贴配置码」</span>。</p>
+    </li>
+    <li>
+      <span class="step-title">接通后删掉旧表格</span>
+      <p>Vex 显示新副本已接通后，旧表格就可以删了：打开 <a href="https://drive.google.com/">drive.google.com</a>，右键点旧表格，选「移至回收站」。新旧两份的文件名可能一样，打开确认一下：旧的那份点 <span class="ui">「Vex 推送 › 查看状态」</span>，第一行以 <span class="ui">「已暂停」</span>开头。</p>
+      <p><strong>不要去「我的触发器」删任何东西</strong>：旧表格在第 1 步暂停时已经删掉了自己的定时触发器，那里剩下的是新副本的；两份的脚本项目都叫「Vex 推送」，看不出哪个是哪个，删错了推送就停了。</p>
+    </li>
+  </ol>
+  <div class="callout callout-warn">
+    <strong class="callout-title">顺序不能反</strong>
+    <p>同一个 Google 账号下的两份副本共用每天 90 分钟的定时运行时间，同时跑当天就可能超额。忘了暂停旧的，状态页会提示 <span class="ui">「有两份 Google 表格在同时检查，请在旧的那份里点「Vex 推送 › 暂停推送」。」</span></p>
+  </div>
+  <p>如果在旧表格里粘贴新的配置码时提示 <span class="ui">「配置码的版本比这里的新，请更新：这份表格是旧版。…」</span>，也是同样的处理：暂停旧的，制作新副本。</p>
+  <p>只是<strong>重新设置</strong>（换了密钥、feed 地址失效、暂停后恢复）时，不用建新副本：在原来那份表格里点 <span class="ui">「第 2 步：粘贴配置码」</span>即可；只是恢复暂停的，留空直接点 <span class="ui">「确定」</span>。</p>
+
+  <h2 id="sheet-menu">表格菜单里的其他几项</h2>
+  <p>表格菜单「Vex 推送」里，除了 <span class="ui">「第 1 步：授权（只需一次）」</span>和 <span class="ui">「第 2 步：粘贴配置码」</span>，还有：</p>
+  <div class="table-wrap">
+    <table class="stack">
+      <thead>
+        <tr><th scope="col">菜单项</th><th scope="col">做什么</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row"><span class="ui">「发送测试推送」</span></th>
+          <td data-label="做什么">让推送服务器给所有已连接的设备发一条测试推送，标题「Vex 推送测试」，正文「推送服务器工作正常。」。只要有一台发成功，「查看状态」里推送没送出去的那一行就会消失。</td>
+        </tr>
+        <tr>
+          <th scope="row"><span class="ui">「查看状态」</span></th>
+          <td data-label="做什么">是否正在运行、每几分钟检查一次、最近 24 小时用量、推送有没有送出去、最近一次错误等，见<a href="#sheet-status">上文</a>。</td>
+        </tr>
+        <tr>
+          <th scope="row"><span class="ui">「暂停推送」</span></th>
+          <td data-label="做什么">不再检查新提醒，所有设备都收不到推送；保存的配置留着。见<a href="remove.html#pause-all">所有设备都暂停</a>。</td>
+        </tr>
+        <tr>
+          <th scope="row"><span class="ui">「重置已读记录」</span></th>
+          <td data-label="做什么">「清空已读记录后，下一轮检查只会把当前的提醒记为已读，不会推送它们；保存的配置不受影响。一般只在排查问题时用。」</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="quota">检查频率与配额</h2>
+  <h3>多久检查一次</h3>
+  <p>表格默认<strong>每 1 分钟</strong>检查一次新提醒，并默认开着<strong>自动降频</strong>。现在实际的间隔，在 Vex 的「Google 表格」一行（「每 <var>M</var> 分钟检查」）和表格「查看状态」的第一行都能看到。</p>
+  <ul>
+    <li>读 feed 连续失败时，第 1 次失败下一轮照常再读；从第 2 次起依次等 2、4、8、16 分钟再读，之后每 30 分钟读一次，免得 V2EX 出问题时把每天的运行时间耗光。</li>
+    <li>表格每小时向推送服务器报一次运行状态，每次约 0.3 秒，内容不含提醒和 feed 地址。</li>
+  </ul>
+
+  <h3>Google 的配额</h3>
+  <ul>
+    <li>Google 免费个人账号的定时脚本，每天总共只能运行 <strong>90 分钟</strong>；Google Workspace（公司、学校）账号是每天 6 小时。配额按用户计算，你名下的其他定时脚本也会用掉一部分。见 Google 官方的 <a href="https://developers.google.com/apps-script/guides/services/quotas">Apps Script 配额页</a>。</li>
+    <li>实测每分钟检查一次时，一天约用 58 分钟，离 90 分钟不远，V2EX 一变慢就可能超额。</li>
+    <li>所以脚本按最近 24 小时的用量自动放慢：用到 70 分钟改为每 5 分钟检查一次，用到 72 分钟改为每 15 分钟；V2EX 很慢时会更早放慢，最慢每 30 分钟一次。用量比分档线再低 10 分钟才恢复（例如每 5 分钟时，要降到 60 分钟以下才恢复每分钟）。降频期间，新提醒会晚几分钟到。</li>
+    <li>真的超额时，当天的定时运行会报错停止，在脚本的执行记录或 Google 发来的邮件里能看到 <code>Service using too much computer time for one day</code>。Google 官方配额页写的是在第一次请求的 24 小时后重置，没有固定的重置时刻。</li>
+  </ul>
+
+  <h3>Cloudflare 的免费额度</h3>
+  <ul>
+    <li>Workers 免费套餐每个账号每天最多处理 10 万次请求，账号里所有 Worker 共用，每天 UTC 零点（北京时间早上 8 点）重置；超出后 Cloudflare 返回错误 1027。见 <a href="https://developers.cloudflare.com/workers/platform/limits/">Workers 限制</a>。</li>
+    <li>KV 免费额度每天读 10 万次、写 1,000 次、删 1,000 次、列举 1,000 次，存储 1 GB，UTC 零点重置。推送服务器只在需要时才写，一般远远用不完。见 <a href="https://developers.cloudflare.com/kv/platform/pricing/">KV 价格</a>。</li>
+    <li>workers.dev 地址谁都能访问，不带密钥、被推送服务器拒掉的请求也计入请求数。万一有人找到你的地址把当天的请求数刷满，当天推送会失败，过了 UTC 零点自动恢复。不带密钥的请求只能看出这是一台 Vex 推送服务器和它的版本号，拿不到设备、提醒或表格状态。</li>
+  </ul>
+
+  <h2 id="content">推送的内容</h2>
+  <ul>
+    <li>每条新提醒推一条通知。回复、提及：标题形如「X 在 主题 里回复了你」，正文是回复内容；感谢：标题「<var>作者</var> 感谢了你」；收藏、打赏：标题「<var>作者</var> 与你有新的互动」，正文「点击查看」。</li>
+    <li>一轮最多推 10 条：超过 10 条时推最新的 9 条，再加一条汇总「还有 <var>N</var> 条新提醒」，点开会切到 Vex 的消息标签。</li>
+    <li>连的设备多、一轮提醒也多时（设备数乘条数超过 40），推送服务器给每台设备只发一条汇总「你有 <var>N</var> 条新提醒」，点开同样切到消息标签。</li>
+    <li>同一帖子的通知在通知中心归为一组。同一条提醒即使被投递两次，通知中心也只留一条，但后到的那次可能再响一次。</li>
+    <li>在 V2EX 删掉提醒后，更早的提醒会从 feed 底部补进来，脚本只把它们记为已读，不推送。</li>
+    <li>推送服务器暂时发不出去时，每条提醒最多重试 5 轮，之后放弃并记为已读，不会再补推。</li>
+  </ul>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <nav aria-label="页脚导航">
+      <ul>
+        <li><a href="index.html">首页</a></li>
+        <li><a href="setup.html">设置</a></li>
+        <li><a href="manage.html">日常使用</a></li>
+        <li><a href="troubleshooting.html">常见提示与排查</a></li>
+        <li><a href="remove.html">停用与删除</a></li>
+      </ul>
+    </nav>
+    <p>最后更新：2026-10-15</p>
+    <p>本站只是说明文档，Vex 与开发者不经手你的任何数据。</p>
+  </div>
+</footer>
+</body>
+</html>

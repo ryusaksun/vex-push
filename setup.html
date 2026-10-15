@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="在 Vex 里设置自建推送：两步向导的详细步骤、Google 授权提示怎么点、已有推送服务器时的选择与常见问题。">
+<title>设置 · Vex 自建推送</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"></span>Vex 自建推送</a>
+    <nav class="site-nav" aria-label="页面导航">
+      <ul>
+        <li><a href="index.html">首页</a></li>
+        <li><a href="setup.html" aria-current="page">设置</a></li>
+        <li><a href="manage.html">日常使用</a></li>
+        <li><a href="troubleshooting.html">常见提示与排查</a></li>
+        <li><a href="remove.html">停用与删除</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+  <h1>设置</h1>
+  <p class="lead">在 Vex 里跟着两步向导走：第 1 步把推送服务器部署到你的 Cloudflare 账号，第 2 步让你的 Google 表格开始检查新提醒。大约 10 分钟。</p>
+
+  <nav class="toc" aria-labelledby="toc-title">
+    <p class="toc-title" id="toc-title">本页目录</p>
+    <ol>
+      <li><a href="#entry">找到入口</a></li>
+      <li><a href="#before">开始之前</a></li>
+      <li><a href="#step1">第 1 步：部署推送服务器</a></li>
+      <li><a href="#existing">账号里已经有推送服务器时</a></li>
+      <li><a href="#step2">第 2 步：设置 Google 表格</a></li>
+      <li><a href="#unverified">Google 的「尚未验证」提示</a></li>
+      <li><a href="#result">结果页与待办</a></li>
+      <li><a href="#faq">常见问题</a></li>
+    </ol>
+  </nav>
+
+  <h2 id="entry">找到入口</h2>
+  <ol class="steps">
+    <li>在 Vex 首页点左上角的头像（VoiceOver 读作 <span class="ui">「个人主页」</span>），打开 <span class="ui">「我的」</span>。iPad 用侧栏布局时，<span class="ui">「我的」</span>在侧栏的 <span class="ui">「账户」</span>一节里。</li>
+    <li>在 <span class="ui">「设置」</span>一节点 <span class="ui">「偏好设置」</span>，进入标题为 <span class="ui">「设置」</span>的页面。</li>
+    <li>在 <span class="ui">「通知」</span>一节点 <span class="ui">「自建推送服务器」</span>。</li>
+  </ol>
+  <p>Vex 自己的说明里把这条路径简写成 <span class="ui">「设置 › 通知 › 自建推送服务器」</span>。没有登录 V2EX 时，<span class="ui">「我的」</span>里也有 <span class="ui">「偏好设置」</span>，照样进得去。</p>
+  <p>入口右侧会显示简短状态：<span class="ui">「未设置」</span>、<span class="ui">「已断开」</span>、<span class="ui">「正在连接」</span>、<span class="ui">「已连接」</span>或 <span class="ui">「连接失败」</span>。</p>
+  <p>第一次进来时，页面上有一段介绍和两个按钮：</p>
+  <ul>
+    <li><span class="ui">「开始设置」</span>：进入配置向导，本页下面讲的就是它。</li>
+    <li><span class="ui">「已经有推送服务器」</span>：已经在别的设备上设置好了，只想把这台设备也接上。见<a href="manage.html#add-device">添加另一台设备</a>。</li>
+  </ul>
+
+  <div class="callout callout-note">
+    <strong class="callout-title">需要永久会员</strong>
+    <p>没有永久会员权益时，各页顶部写着 <span class="ui">「消息推送属于永久会员的账号消息功能」</span>，开始设置、重新连接、粘贴配置码等连接类操作都不能点。试用期内可以用，顶部改写成 <span class="ui">「消息推送属于永久会员的账号消息功能，试用结束后推送会停」</span>。</p>
+    <p>试用结束后，Vex 会请推送服务器删除本机，状态变为 <span class="ui">「需要永久会员」</span>；开关、地址和密钥都保留，重新获得权益后会自动再注册。</p>
+  </div>
+  <p><span class="ui">「自建推送服务器」</span>和同一节里的 <span class="ui">「新消息通知」</span>开关互不依赖：推送由你自己的服务器发来，不需要 Vex 在后台检查。</p>
+
+  <h2 id="before">开始之前</h2>
+  <p>点 <span class="ui">「开始设置」</span>后，向导以弹出页的形式出现，导航栏标题是 <span class="ui">「设置推送」</span>，左上角的叉号是关闭。第一页是 <span class="ui">「开始之前」</span>：</p>
+  <div class="app-text">
+    <span class="source">Vex 里的原文</span>
+    <p>「两步把 V2EX 的新提醒推送到这台设备：先把推送服务器部署到你自己的 Cloudflare 账号，再让你自己的 Google 表格定时检查新提醒。大约 10 分钟。」</p>
+  </div>
+  <p><span class="ui">「需要准备」</span>一节列着四行：</p>
+  <ul>
+    <li><span class="ui">「一个 Cloudflare 账号」</span>：<span class="ui">「新注册的先去邮箱点验证链接」</span></li>
+    <li><span class="ui">「一个 Google 账号」</span></li>
+    <li><span class="ui">「一台电脑」</span>：<span class="ui">「第 2 步要在电脑浏览器里做」</span></li>
+    <li><span class="ui">「在中国大陆，手机要开代理」</span></li>
+  </ul>
+  <p>准备好了点 <span class="ui">「开始」</span>。第 1 步在手机上就能做完；做到第 2 步的「在电脑上」那部分时，再坐到电脑前。</p>
+
+  <h2 id="step1">第 1 步：部署推送服务器</h2>
+  <p>页顶写着 <span class="ui">「第 1 步，共 2 步」</span>，标题 <span class="ui">「部署推送服务器」</span>：</p>
+  <div class="app-text">
+    <span class="source">Vex 里的原文</span>
+    <p>「Vex 用一个 Cloudflare 令牌，把推送服务器（一个 Worker）部署到你自己的 Cloudflare 账号里。」</p>
+  </div>
+
+  <ol class="steps">
+    <li>
+      <span class="step-title">创建 Cloudflare 令牌</span>
+      <p>在 <span class="ui">「先创建 Cloudflare 令牌」</span>一节点 <span class="ui">「创建 Cloudflare 令牌」</span>。系统浏览器会打开 Cloudflare 的令牌页，令牌名 <span class="ui">「Vex Push」</span>和三项权限（编辑 Workers 脚本、编辑 Workers KV 存储、读取账号设置）都已经预填好。照 Vex 里的说明做：</p>
+      <div class="app-text">
+        <p>「在浏览器里登录，拉到页面最下面点「继续以显示摘要」（Continue to summary），再点「创建令牌」（Create Token），然后点令牌旁边的复制按钮，回到 Vex。」</p>
+      </div>
+      <ul>
+        <li>预填的权限不要改。</li>
+        <li>没有 Cloudflare 账号的，先注册，注册完回到 Vex 再点一次 <span class="ui">「创建 Cloudflare 令牌」</span>。新账号要先去邮箱点验证链接。</li>
+        <li>登录下有多个 Cloudflare 账号的，在 <span class="ui">「帐户资源」</span>（Account Resources）里只选要用的那个。</li>
+      </ul>
+      <p class="muted">Cloudflare 页面上的按钮名是 2026 年 10 月中文界面的说法，Cloudflare 改版后可能有出入，找意思相近的按钮即可。</p>
+    </li>
+    <li>
+      <span class="step-title">把令牌交给 Vex</span>
+      <p>回到 Vex，在 <span class="ui">「再交给 Vex」</span>一节二选一：</p>
+      <ul>
+        <li>在 <span class="ui">「粘贴 Cloudflare 令牌」</span>那一行点系统的 <span class="ui">「粘贴」</span>按钮；</li>
+        <li>或者把令牌填进下面的密码框（占位文字 <span class="ui">「也可以手动填入」</span>），再点 <span class="ui">「继续」</span>。</li>
+      </ul>
+      <p>收下后页面只显示令牌的末 4 位（<span class="ui">「已填入 Cloudflare 令牌 ····」</span>后面跟 4 个字符）。Vex 收下令牌时会清空剪贴板，剪贴板里别的内容也会一起清掉。拷贝到的东西不像令牌时，会提示 <span class="ui">「剪贴板里的不像 Cloudflare 令牌」</span>（这时剪贴板不动）；手动填的不像时，提示 <span class="ui">「这不像 Cloudflare 令牌，请重新拷贝后再填」</span>。</p>
+      <div class="app-text">
+        <span class="source">这一节底部的说明</span>
+        <p>「Cloudflare 令牌只发给 Cloudflare，部署完即丢弃，Vex 不保存；收下令牌时会清空剪贴板。」</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-title">允许通知</span>
+      <p>Vex 收下令牌后、开始部署前会检查通知权限；还没问过的话，系统这时弹出询问，选允许。拒绝了也能部署完，但这台设备收不到推送，页顶会显示 <span class="ui">「通知已关闭，收不到推送。」</span>和 <span class="ui">「去开启」</span>（打开系统设置里 Vex 的通知页）。开启通知后回到 Vex，会自动补上连接。以前已经允许过的，不会再问。</p>
+    </li>
+    <li>
+      <span class="step-title">等它自动完成</span>
+      <p><span class="ui">「进度」</span>一节有四行，Vex 依次完成：</p>
+      <ol>
+        <li><span class="ui">「检查 Cloudflare 令牌」</span></li>
+        <li><span class="ui">「部署推送服务器」</span>：选账号、准备 workers.dev 子域名和 KV 存储、上传 Worker。</li>
+        <li><span class="ui">「等它上线」</span>：转圈时下面写着 <span class="ui">「刚部署的 Worker 往往要等几十秒才能访问」</span>，最多等 90 秒。</li>
+        <li><span class="ui">「连接这台设备」</span></li>
+      </ol>
+      <p>令牌看得到多个 Cloudflare 账号时，中途会出现 <span class="ui">「选择 Cloudflare 账号」</span>：<span class="ui">「这个 Cloudflare 令牌看得到多个账号，选一个用来部署推送服务器。」</span>点一个账号名即可。</p>
+    </li>
+    <li>
+      <span class="step-title">收到测试推送，点「继续」</span>
+      <p>这台设备连上后，Vex 自动发一条测试推送，<span class="ui">「继续」</span>按钮上方显示 <span class="ui">「测试推送已发出，稍后应收到「Vex 推送测试」通知」</span>。测试推送没到不算部署失败，可以之后再查（见<a href="troubleshooting.html#test-push">测试推送</a>）。点 <span class="ui">「继续」</span>进入第 2 步。</p>
+    </li>
+  </ol>
+
+  <h3 id="step1-errors">第 1 步出错了怎么办</h3>
+  <p>哪一步失败，就在那一行下面写原因。按钮视情况出现：</p>
+  <div class="table-wrap">
+    <table class="stack">
+      <thead>
+        <tr><th scope="col">按钮</th><th scope="col">作用</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row"><span class="ui">「重试」</span></th><td data-label="作用">从没做完的那一步接着做。</td></tr>
+        <tr><th scope="row"><span class="ui">「换一个 Cloudflare 令牌」</span></th><td data-label="作用">换一个令牌重新粘贴，已经完成的步骤保留。令牌无效、权限不够、看不到任何账号时只有这一个按钮。</td></tr>
+        <tr><th scope="row"><span class="ui">「继续等待」</span></th><td data-label="作用">推送服务器还没上线，再等一轮。</td></tr>
+        <tr><th scope="row"><span class="ui">「先保存，稍后连接」</span></th><td data-label="作用">不再等它上线，直接试着连接这台设备（地址与密钥在上传 Worker 之后就已经存好）。Vex 的说明：<span class="ui">「地址与密钥已经保存。选「先保存，稍后连接」的话，这台设备这次多半连不上，开代理后回到 Vex 会自动补上。」</span></td></tr>
+        <tr><th scope="row"><span class="ui">「重试连接」</span></th><td data-label="作用"><span class="ui">「推送服务器已经部署好，只重试连接这台设备。」</span>不会重新部署。</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>各条报错的原文和做法，见<a href="troubleshooting.html#deploy">常见提示与排查 › 部署时的报错</a>。部署期间 Vex 被切到后台导致的失败，回到前台后会自动重试。</p>
+
+  <h3 id="close-midway">中途关掉向导</h3>
+  <p>开始上传 Worker 之后再点叉号，会先问 <span class="ui">「部署还没完成，确定离开？」</span>，可以选 <span class="ui">「继续部署」</span>或 <span class="ui">「离开」</span>，并说明：<span class="ui">「已经做完的步骤会保留，回来可以接着做（要重新粘贴 Cloudflare 令牌）。」</span>回来时从哪里接着做，看关掉的时候做到了哪一步：</p>
+  <ul>
+    <li><strong>第一次设置，Worker 已经上传、还没开始连接这台设备时关掉的</strong>（例如卡在 <span class="ui">「等它上线」</span>时）：地址与密钥在上传成功时就已经存下了，只是还没连接，所以「自建推送服务器」页会变成「已断开」页（入口右侧显示 <span class="ui">「已断开」</span>），没有 <span class="ui">「开始设置」</span>了。点 <span class="ui">「重新连接」</span>用已经保存的地址和密钥连上，再点 <span class="ui">「还差一步：设置 Google 表格」</span>接着做第 2 步；也可以点 <span class="ui">「重新部署」</span>，重新粘贴令牌后从没做完的那一步接着做。</li>
+    <li><strong>还没上传就关掉的</strong>：页面还是第一次进来时的样子，照旧点 <span class="ui">「开始设置」</span>，重新粘贴令牌接着做。</li>
+    <li>没做完的部署步骤只记在内存里：Vex 被关掉之后，<span class="ui">「重新部署」</span>或 <span class="ui">「开始设置」</span>要从头来，Cloudflare 账号里已经建好的会直接沿用。</li>
+    <li>用过 Cloudflare 令牌之后再关，向导会先跳到结果页，让你看到删除令牌的待办。</li>
+  </ul>
+
+  <h2 id="existing">账号里已经有推送服务器时</h2>
+  <p>以前在这个 Cloudflare 账号里部署过（Worker 名叫 <code>vex-push</code>）的话，第 1 步会先核对这台设备上有没有它的密钥：</p>
+
+  <div class="card">
+    <h3>这台设备上有它认得的密钥</h3>
+    <p>直接沿用这个密钥部署，不提问。Google 表格和其他设备都不受影响。</p>
+  </div>
+
+  <div class="card">
+    <h3>这台设备上没有可用的密钥</h3>
+    <p>向导停在 <span class="ui">「已有推送服务器」</span>：<span class="ui">「这个 Cloudflare 账号里已经有推送服务器（vex-push），而这台设备没有它的密钥。」</span>给出两个按钮：<span class="ui">「重新部署」</span>和 <span class="ui">「改为粘贴配置码」</span>。</p>
+    <div class="app-text">
+      <span class="source">两个按钮下面的说明</span>
+      <p>「重新部署会换一个新密钥：原来连着的设备和 Google 表格都要重新粘贴配置码。不想换密钥就改为粘贴配置码：在已连接的设备上点「添加另一台设备」，把配置码拷过来粘贴。」</p>
+    </div>
+    <p>怎么选：</p>
+    <ul>
+      <li><strong>还有别的设备连着它</strong>（例如 iPad 上已经设置好了）：选 <span class="ui">「改为粘贴配置码」</span>。向导关闭，进入 <span class="ui">「已经有推送服务器」</span>页，页顶有删除刚才那个 Cloudflare 令牌的提醒。然后照<a href="manage.html#add-device">添加另一台设备</a>拿配置码粘贴。</li>
+      <li><strong>一台连着的都没有了</strong>（例如换了手机、旧手机也不在了）：选 <span class="ui">「重新部署」</span>。部署完向导会接着进入<a href="#step2">第 2 步</a>，生成新的配置码；在原来那份 Google 表格里点 <span class="ui">「第 2 步：粘贴配置码」</span>粘贴，不用再建副本。以后要接上别的设备，用<a href="manage.html#add-device">「添加另一台设备」</a>。</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>连不上它，没法核对</h3>
+    <p>提示 <span class="ui">「无法确认本机的密钥是否仍然有效」</span>，按钮是 <span class="ui">「开代理后重试」</span>和 <span class="ui">「按没有密钥处理」</span>：</p>
+    <div class="app-text">
+      <p>「账号里已经有推送服务器，但现在连不上它（workers.dev 在中国大陆通常要开代理），没法核对本机保存的密钥。按没有密钥处理的话，下一步可以选重新部署（换新密钥）或改为粘贴配置码。」</p>
+    </div>
+    <p>先开代理再点 <span class="ui">「开代理后重试」</span>；确定这台设备上本来就没有它的密钥，再选 <span class="ui">「按没有密钥处理」</span>。</p>
+  </div>
+
+  <h2 id="step2">第 2 步：设置 Google 表格</h2>
+  <p>页顶写着 <span class="ui">「第 2 步，共 2 步」</span>，标题 <span class="ui">「设置 Google 表格」</span>：</p>
+  <div class="app-text">
+    <span class="source">Vex 里的原文</span>
+    <p>「你自己的 Google 表格里有一段脚本，每隔几分钟读一次你的 V2EX 提醒，有新提醒就让推送服务器发通知。它要知道你的提醒 feed 地址。」</p>
+  </div>
+  <div class="callout callout-note">
+    <strong class="callout-title">以前建过表格副本？</strong>
+    <p>「以前建过表格副本的，直接在那份里点「第 2 步：粘贴配置码」，不用再建；要换新版表格的，先在旧的那份里点「暂停推送」。」两份副本同时运行会多用每天的配额，见<a href="manage.html#update-sheet">更新 Google 表格</a>。</p>
+  </div>
+
+  <h3 id="feed">① 选择 feed 地址从哪里来</h3>
+  <p><span class="ui">「feed 地址从哪里来」</span>一节有两个选择：</p>
+
+  <div class="card">
+    <h4>「让 Vex 读取」</h4>
+    <p>说明：<span class="ui">「读出当前账号的 feed 地址，放进配置码。读取前会再确认一次。」</span>点了之后先弹出 <span class="ui">「读取 feed 地址？」</span>：</p>
+    <div class="app-text">
+      <p>「Vex 会打开 V2EX 提醒页，读出 @<var>用户名</var> 的 feed 地址。未读消息会变成已读（消息还在「消息」页）。地址和你的用户名只放进配置码，由你带到自己的 Google 表格里，Vex 不保存也不上传。」</p>
+    </div>
+    <p>点 <span class="ui">「读取」</span>后显示 <span class="ui">「正在读取 feed 地址…」</span>。注意副作用：站内的未读提醒会变成已读。读取失败时，Vex 会自动改为「到电脑上自己复制」并写明原因；遇到 V2EX 的人机验证时不换路，验证完会自动重试（原因列表见<a href="troubleshooting.html#wizard-sheet">排查页</a>）。</p>
+  </div>
+
+  <div class="card">
+    <h4>「我到电脑上自己复制」</h4>
+    <p>说明：<span class="ui">「Vex 不请求 V2EX。在表格里粘贴配置码之后，会再问一次 feed 地址。」</span>这条路不会清掉未读。</p>
+    <p>到时候表格会弹一个框要 feed 地址：在电脑浏览器登录 V2EX，打开 <a href="https://www.v2ex.com/notifications">https://www.v2ex.com/notifications</a>，把页面底部「提醒系统的 Atom Feed」里的地址粘贴进去。地址形如 <code>https://www.v2ex.com/n/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.xml</code>。</p>
+    <p>没登录 V2EX 时只有这一条路，Vex 会写 <span class="ui">「先登录 V2EX，Vex 才能读取 feed 地址。」</span></p>
+  </div>
+
+  <p>选好之后，页面显示 <span class="ui">「配置码已生成」</span>，下面一行说明它带没带 feed 地址。配置码本身不显示在屏幕上，多任务快照和截图里都不会出现。想换另一种，点 <span class="ui">「重新选择」</span>。</p>
+
+  <h3 id="carry">② 把模板链接和配置码带到电脑上</h3>
+  <p><span class="ui">「带到电脑上」</span>一节有三个按钮，因为剪贴板一次只能放一样东西：</p>
+  <ul>
+    <li><span class="ui">「拷贝模板链接」</span>：Google 表格模板的「制作副本」链接。</li>
+    <li><span class="ui">「拷贝配置码」</span>：拷贝后 10 分钟自动从这台设备的剪贴板清除。</li>
+    <li><span class="ui">「一起分享」</span>：用分享面板把三行文字发给自己：第一行模板链接，第二行一句说明，最后一行配置码。</li>
+  </ul>
+  <p><strong>推荐的顺序</strong>：用登录同一 Apple 账户的 Mac 直接粘贴的，现在先只点 <span class="ui">「拷贝模板链接」</span>；配置码等做到下面 <a href="#on-computer">③ 的第 5 步</a>再回来点 <span class="ui">「拷贝配置码」</span>，免得它被模板链接覆盖，或者授权花的时间太长、超过 10 分钟失效。用别的电脑的，用 <span class="ui">「一起分享」</span>一次发给自己。</p>
+  <p>刚拷贝过的那一行右边会显示 <span class="ui">「已拷贝」</span>。怎么带过去，Vex 的说法是：<span class="ui">「登录同一 Apple 账户的 Mac 一般可以直接粘贴这里拷贝的内容；其他电脑用「一起分享」发给自己。」</span></p>
+  <p>模板链接也可以直接从这里打开：<a href="https://docs.google.com/spreadsheets/d/13R2KxcgAWWrr5kTDu-W5BEQgTXmwEOuVEMpNTykbYcY/copy">Google 表格模板「制作副本」链接</a>。它和 Vex 里拷贝的是同一个。</p>
+  <div class="callout callout-warn">
+    <strong class="callout-title">配置码相当于密码</strong>
+    <p>「配置码相当于密码：拿到它的人能读到你的 V2EX 提醒，也能把自己的设备接到你的推送上。只发给自己；用聊天软件传的，用完把那条消息删掉。」</p>
+  </div>
+
+  <h3 id="on-computer">③ 在电脑上</h3>
+  <p>下面每一步的第一段，与 Vex「在电脑上」一节、表格「说明」页的原文逐字相同；后面是补充说明。</p>
+  <ol class="steps">
+    <li>
+      <p><strong>在电脑浏览器打开模板链接，点「制作副本」。</strong></p>
+      <p>页面标题是「复制文档」，问「要复制“Vex 推送”吗？」，并提示「系统会同时复制附加的 Apps 脚本文件及功能」；英文界面的按钮叫 Make a copy。副本会出现在你自己的 Google 云端硬盘里，文件名是「Vex 推送（副本）」。用 Chrome 这类普通浏览器，不要用会拦截弹窗的内置浏览器。</p>
+    </li>
+    <li>
+      <p><strong>等几秒，菜单栏最右边出现「Vex 推送」（没出现就刷新页面）。点「第 1 步：授权」→「继续」→ 选自己的 Google 账号。</strong></p>
+      <p>菜单项的全名是 <span class="ui">「第 1 步：授权（只需一次）」</span>。第一次点任何菜单项，Google 都会先要求授权，而且授权完不会接着运行，所以授权单独做成第 1 步。</p>
+    </li>
+    <li>
+      <p><strong>看到「Google 尚未验证此应用」：点左下角「高级」，再点「转至 Vex 推送（不安全）」。这是你刚建立的副本里的脚本，只在你自己的账号下运行，没有提交给 Google 审核，所以有这个提示。</strong></p>
+      <p>为什么会有这个提示、脚本要哪些权限，见下一节<a href="#unverified">Google 的「尚未验证」提示</a>。只对用 Vex 里拷贝的、或本页给出的模板链接制作的副本这样点；下一步列出的权限如果超出下一节说的两项，点取消，不要允许。</p>
+    </li>
+    <li>
+      <p><strong>权限前面有复选框的全部勾选，点「允许」。</strong></p>
+      <p>授权完再点一次 <span class="ui">「第 1 步：授权（只需一次）」</span>，会提示 <span class="ui">「已经授权，请点第 2 步。」</span></p>
+    </li>
+    <li>
+      <p><strong>回到表格点「第 2 步：粘贴配置码」，粘贴，确定。</strong></p>
+      <p>粘贴之前，先回到 Vex 点 <span class="ui">「拷贝配置码」</span>（拷贝后 10 分钟内有效）；用「一起分享」发过来的不用再拷。对话框里写着 <span class="ui">「把 Vex 里拷贝的配置码粘贴到下面，点「确定」。整段分享文字一起贴进来也可以。」</span>用「一起分享」发过来的，可以只粘最后一行，也可以整段粘进去。配置码里没有 feed 地址时，表格会再弹一个框要它（做法见上面的<a href="#feed">「我到电脑上自己复制」</a>）。</p>
+      <p>设置成功后弹出总结，第一行是 <span class="ui">「设置完成。」</span>，其中有一行 <span class="ui">「· 已经通知 Worker，Vex 里最长约 1 分钟后显示已接通。」</span>，结尾提醒：<span class="ui">「这个表格要一直留着，删掉后推送会停。」</span>当时 feed 里已有的提醒全部记为已读，之后来的新提醒才推送。</p>
+    </li>
+  </ol>
+  <div class="app-text">
+    <span class="source">Vex「在电脑上」一节底部的说明</span>
+    <p>「第 5 步粘贴的是配置码：做到这一步再回这里点「拷贝配置码」，拷贝后 10 分钟内有效；用「一起分享」发过去的，拷贝那段文字的最后一行。在电脑上粘贴完，再拷贝点别的把它覆盖掉。」</p>
+  </div>
+
+  <h3 id="wait">④ 等待接通</h3>
+  <p>配置码生成后，Vex 在 <span class="ui">「等待接通」</span>一节自动查询表格有没有接通，显示 <span class="ui">「正在等 Google 表格接通…」</span>。在表格里粘贴成功后，最长约 1 分钟这里会显示 <span class="ui">「已接通」</span>，并自动进入结果页。</p>
+  <ul>
+    <li>前 2 分钟每 5 秒查一次，之后每 15 秒一次；满 10 分钟停止，显示 <span class="ui">「还没有接通。」</span>和 <span class="ui">「再查一次」</span>。授权耗时较长时常会这样：在表格里粘贴好配置码，回到 Vex 点 <span class="ui">「再查一次」</span>即可。</li>
+    <li>从后台回到 Vex 时会立即查一次。</li>
+    <li>如果显示 <span class="ui">「Worker 版本较旧，先更新 Worker：关掉这一页，在「自建推送服务器」里点「更新 Worker」。」</span>，照做后再回来设置表格，见<a href="manage.html#update-worker">更新 Worker</a>。</li>
+  </ul>
+  <p>不想现在做第 2 步，可以点 <span class="ui">「稍后再做」</span>：<span class="ui">「没有设置 Google 表格之前，Vex 自带的新消息通知照常工作。」</span>之后在「自建推送服务器」页点 <span class="ui">「还差一步：设置 Google 表格」</span>接着做。</p>
+
+  <h2 id="unverified">Google 的「尚未验证」提示</h2>
+  <h3>为什么会出现</h3>
+  <p>表格里的脚本在你刚制作的副本里，只在你自己的 Google 账号下运行，没有提交给 Google 审核，Google 对这样的脚本都会显示「Google 尚未验证此应用」。开发者选择让你「制作副本」，就是为了不托管任何服务、不经手你的数据；代价是授权时会看到这个提示。</p>
+
+  <h3>怎么点</h3>
+  <p>步骤就是上面<a href="#on-computer">「在电脑上」</a>的第 3、4 步。另外两点：在「Google 尚未验证此应用」页面不要点蓝色按钮，那会结束这次授权；「转至 Vex 推送（不安全）」里的「Vex 推送」是副本里脚本项目的名字。</p>
+
+  <h3>它要哪些权限</h3>
+  <p>脚本只申请两项权限，用白话说是：</p>
+  <ul>
+    <li><strong>连接外部服务</strong>：读取 V2EX 的提醒 feed，调用你自己的推送服务器。</li>
+    <li><strong>管理它自己的定时触发器</strong>：让脚本在你不打开表格时，也每隔几分钟自动运行。</li>
+  </ul>
+  <p>脚本不读写任何单元格，也不申请读取你的表格内容、Google 云端硬盘文件或 Gmail 的权限。授权页上每项权限的确切写法以 Google 页面为准。</p>
+  <div class="callout callout-warn">
+    <strong class="callout-title">权限不止这两项时，不要允许</strong>
+    <p>只用 Vex 里拷贝的链接或本页的模板链接制作副本。授权页列出的权限如果不止这两项（例如要查看、修改你的 Google 云端硬盘文件、表格或 Gmail），说明这不是 Vex 的模板，点取消，不要允许。</p>
+  </div>
+
+  <h3>为什么要全部勾选</h3>
+  <p>Google 的授权页允许逐项勾选权限。漏勾了管理定时触发器的那一项，脚本就没法定时运行。所以除第 1 步外，其余菜单项都会先检查权限，缺的话提示 <span class="ui">「授权时有权限没勾选，请再点第 1 步并全部勾选。」</span>照做即可。</p>
+
+  <h3>其他情况</h3>
+  <ul>
+    <li><strong>最后看到「Access is denied.」</strong>：这次授权以拒绝告终，例如点了「尚未验证」页上的蓝色按钮、点了取消，或者一项权限都没勾。重新点 <span class="ui">「第 1 步：授权（只需一次）」</span>，照上面<a href="#on-computer">「在电脑上」</a>的第 3、4 步再来一次。</li>
+    <li><strong>页面报错、要求重新加载</strong>：多半是在会拦截弹窗的内置浏览器里打开的（例如微信里），拿不到 Google 的授权弹窗。换 Chrome 这类普通浏览器。</li>
+    <li><strong>以后想收回授权</strong>：见<a href="remove.html#revoke">停用与删除 › 撤销授权</a>。</li>
+  </ul>
+
+  <h2 id="result">结果页与待办</h2>
+  <p>全部做完，结果页顶部写 <span class="ui">「设置完成」</span>：<span class="ui">「V2EX 有新提醒时，这台设备会收到推送。」</span>没做完时写 <span class="ui">「还没有全部完成」</span>：<span class="ui">「下面标出了还没做完的部分，回到「自建推送服务器」可以接着做。」</span></p>
+  <p><span class="ui">「结果」</span>一节有三行：<span class="ui">「推送服务器」</span>、<span class="ui">「这台设备」</span>、<span class="ui">「Google 表格」</span>，分别写着各自的状态，例如 <span class="ui">「已就绪」</span>、<span class="ui">「已连接」</span>、<span class="ui">「已接通」</span>。</p>
+
+  <div class="callout callout-warn">
+    <strong class="callout-title">待办：到 Cloudflare 删除令牌</strong>
+    <p>只要这次用过 Cloudflare 令牌，结果页都有一节 <span class="ui">「待办」</span>：<span class="ui">「到 Cloudflare 删除名为 Vex Push 的令牌，有几个删几个」</span>，说明是 <span class="ui">「Vex 已经丢弃这个 Cloudflare 令牌，但它没有有效期，要你自己删掉。」</span></p>
+    <ol>
+      <li>点 <span class="ui">「打开 Cloudflare 令牌管理页」</span>（即 Cloudflare 控制台的 My Profile › API Tokens 页）。</li>
+      <li>在令牌列表里找到名为 Vex Push 的令牌，点它所在行右侧的三点菜单（⋯），选择删除并确认。有几个删几个。</li>
+    </ol>
+  </div>
+  <p>最后点 <span class="ui">「完成」</span>关闭向导。</p>
+
+  <h2 id="faq">常见问题</h2>
+  <div class="faq">
+    <details>
+      <summary>一定要用电脑吗？</summary>
+      <p>第 1 步在手机上就能做完。第 2 步要在电脑浏览器里做：Google 表格的菜单和首次授权在手机上用不了。</p>
+    </details>
+    <details>
+      <summary>在中国大陆需要做什么？</summary>
+      <p>手机要开代理。Vex 要连 Cloudflare 的接口和你的 workers.dev 地址：部署、等上线、注册本机和读取表格状态都要用到。可以用系统层面的代理，也可以用 Vex 设置页「网络」一节里的 <span class="ui">「代理」</span>（需要 iOS 17 或更高）。表格运行在 Google 的服务器上、推送由 Apple 送达，这两段不受影响。更多见<a href="troubleshooting.html#mainland">排查页</a>。</p>
+    </details>
+    <details>
+      <summary>要花钱吗？</summary>
+      <p>Cloudflare 和 Google 两处都用免费额度，平时够用，见<a href="manage.html#quota">检查频率与配额</a>。Vex 这一端需要永久会员。</p>
+    </details>
+    <details>
+      <summary>Cloudflare 令牌会被 Vex 保存吗？</summary>
+      <p>不会。令牌只放在向导的内存里，只发给 Cloudflare 的接口，部署完、换令牌或关闭向导时丢弃，不写进钥匙串、偏好设置或日志。但 Cloudflare 上的令牌没有有效期，需要你自己去删（见上面的<a href="#result">待办</a>）。</p>
+    </details>
+    <details>
+      <summary>设置好之后，以前的提醒会被推过来吗？</summary>
+      <p>不会。粘贴配置码时，当时 feed 里已有的提醒全部记为已读，之后来的新提醒才推送。</p>
+    </details>
+    <details>
+      <summary>点推送会打开哪里？</summary>
+      <p>带站内帖子链接的，直接打开对应页面；没有链接，或链接在 Vex 里没有对应页面的（例如汇总推送），切到消息标签；测试推送只打开 Vex。Vex 在前台时，推送照常以横幅显示。</p>
+    </details>
+    <details>
+      <summary>推送生效后，「新消息通知」还会提醒吗？</summary>
+      <p>不会重复提醒：推送生效时，「新消息通知」的后台检查不再发「你有 N 条新消息」，已知计数和图标角标照常更新。表格停了、报错或者换密钥后还没报到时，会自动改回自带的通知。见<a href="manage.html#active">推送生效与新消息通知</a>。</p>
+    </details>
+    <details>
+      <summary>我在 Vex 里登录了多个 V2EX 账号</summary>
+      <p>推送只覆盖设置表格时那个账号的提醒（feed 地址属于那个账号）。设置表格时选了「让 Vex 读取」的，表格里记下了账号标签；Vex 里当前登录的是别的账号时，状态页会提示 <span class="ui">「推送只覆盖 <var>用户名</var>。」</span>（<var>用户名</var>是表格里记下的那个账号）。选「我到电脑上自己复制」的，表格里一般没有账号标签，也就没有这条提示，要自己确认表格里用的是哪个账号的 feed 地址。</p>
+    </details>
+    <details>
+      <summary>我已经在另一台设备上设置好了</summary>
+      <p>不用再走向导。在那台设备上点 <span class="ui">「添加另一台设备」</span>拿配置码，到这台设备上点 <span class="ui">「已经有推送服务器」</span>粘贴，见<a href="manage.html#add-device">添加另一台设备</a>。</p>
+    </details>
+    <details>
+      <summary>在 V2EX 重新生成过 Token，或者想换 feed 地址</summary>
+      <p>原来的 feed 地址已经作废。在 Vex 的「自建推送服务器」页点 <span class="ui">「设置 Google 表格」</span>，重新生成配置码，在原来那份表格里点 <span class="ui">「第 2 步：粘贴配置码」</span>粘贴即可，不用再建副本。</p>
+    </details>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <nav aria-label="页脚导航">
+      <ul>
+        <li><a href="index.html">首页</a></li>
+        <li><a href="setup.html">设置</a></li>
+        <li><a href="manage.html">日常使用</a></li>
+        <li><a href="troubleshooting.html">常见提示与排查</a></li>
+        <li><a href="remove.html">停用与删除</a></li>
+      </ul>
+    </nav>
+    <p>最后更新：2026-10-15</p>
+    <p>本站只是说明文档，Vex 与开发者不经手你的任何数据。</p>
+  </div>
+</footer>
+</body>
+</html>

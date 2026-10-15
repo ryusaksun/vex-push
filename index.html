@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Vex 自建推送的说明：用你自己的 Google 表格和 Cloudflare Worker，把 V2EX 的新提醒推送到 iPhone、iPad 上的 Vex。">
+<title>Vex 自建推送</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"></span>Vex 自建推送</a>
+    <nav class="site-nav" aria-label="页面导航">
+      <ul>
+        <li><a href="index.html" aria-current="page">首页</a></li>
+        <li><a href="setup.html">设置</a></li>
+        <li><a href="manage.html">日常使用</a></li>
+        <li><a href="troubleshooting.html">常见提示与排查</a></li>
+        <li><a href="remove.html">停用与删除</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+  <h1>Vex 自建推送</h1>
+  <p class="lead">让 V2EX 的新提醒（回复、提及、感谢等）像其他 App 的消息一样，以系统推送的形式送到你 iPhone、iPad 上的 Vex；负责推送的两段小程序都放在你自己的免费账号里。</p>
+
+  <div class="app-text">
+    <span class="source">Vex 里的介绍</span>
+    <p>「新提醒由你自己的服务器推送到这台设备：一个 Cloudflare Worker 负责发推送，一份 Google 表格定时检查 V2EX 的新提醒。两样都在你自己的账号下。」</p>
+  </div>
+
+  <div class="callout callout-note">
+    <strong class="callout-title">在 Vex 里找不到这个入口？</strong>
+    <p>入口在 Vex 设置页的「通知」一节，名为 <span class="ui">「自建推送服务器」</span>（完整路径见<a href="setup.html#entry">设置</a>）。如果那里没有这一行，说明你用的 Vex 版本还没有开放这项功能，本站的步骤暂时用不上。</p>
+  </div>
+
+  <h2 id="how">它怎么工作</h2>
+  <p>一条提醒从 V2EX 到你的设备，要经过下面几站。中间两站都在你自己的账号里。</p>
+
+  <ol class="flow" aria-label="一条提醒的推送路径">
+    <li>
+      <div class="flow-node">
+        <strong>V2EX 提醒</strong>
+        <span class="flow-owner">V2EX</span>
+        <span class="flow-desc">你的提醒页底部有一个「提醒系统的 Atom Feed」地址，相当于一把只读钥匙。</span>
+      </div>
+    </li>
+    <li>
+      <p class="flow-edge">默认每分钟读一次 feed</p>
+      <div class="flow-node">
+        <strong>你的 Google 表格</strong>
+        <span class="flow-owner yours">你的 Google 账号</span>
+        <span class="flow-desc">从模板制作的副本里带着一段脚本，定时读取 feed、和已读记录比对，找出新提醒。</span>
+      </div>
+    </li>
+    <li>
+      <p class="flow-edge">有新提醒时交给推送服务器</p>
+      <div class="flow-node">
+        <strong>你的 Cloudflare Worker（推送服务器）</strong>
+        <span class="flow-owner yours">你的 Cloudflare 账号</span>
+        <span class="flow-desc">保存已连接设备的推送令牌，把提醒整理成推送发给 Apple。</span>
+      </div>
+    </li>
+    <li>
+      <p class="flow-edge">经 Apple 推送服务发出</p>
+      <div class="flow-node">
+        <strong>Apple 推送服务（APNs）</strong>
+        <span class="flow-owner">Apple</span>
+        <span class="flow-desc">和所有 iOS 推送一样，由 Apple 送到设备。</span>
+      </div>
+    </li>
+    <li>
+      <p class="flow-edge">送达</p>
+      <div class="flow-node">
+        <strong>你的设备上的 Vex</strong>
+        <span class="flow-owner yours">你的 iPhone / iPad</span>
+        <span class="flow-desc">收到系统通知，点一下打开对应的帖子。</span>
+      </div>
+    </li>
+  </ol>
+
+  <p class="flow-side">另外两条线：Vex 直接连你的推送服务器，注册本机的推送令牌，并读取 Google 表格的运行状态；表格每小时向推送服务器报一次运行状态，所以 Vex 能告诉你表格还在不在检查。</p>
+
+  <h3>为什么要分成两段</h3>
+  <p>V2EX 不接受来自 Cloudflare Workers 的请求，Worker 读不到 feed；Google 的服务器能读 V2EX，却连不上 Apple 的推送服务。所以读提醒交给 Google 表格，发推送交给 Worker，两段各做自己能做的事。</p>
+
+  <h3>和 Vex 自带的「新消息通知」是什么关系</h3>
+  <p>两者互不依赖。自建推送生效时，Vex 自带的「新消息通知」不再另发「你有 N 条新消息」，免得重复；表格没接通、停了或在报错时，Vex 自动改回自带的通知（前提是你开着「新消息通知」）。细节见<a href="manage.html#active">日常使用</a>。</p>
+
+  <h2 id="prepare">需要准备什么</h2>
+  <ul>
+    <li><strong>Vex 永久会员。</strong>Vex 里写着 <span class="ui">「消息推送属于永久会员的账号消息功能」</span>。试用期内也能设置，试用结束后推送会停。</li>
+    <li><strong>一个 Cloudflare 账号。</strong>免费套餐就够。新注册的先去邮箱点验证链接。</li>
+    <li><strong>一个 Google 账号。</strong>个人的免费账号即可。</li>
+    <li><strong>一台电脑，带普通浏览器（例如 Chrome）。</strong>第 2 步要在电脑浏览器里做：Google 表格的菜单和首次授权在手机上用不了；会拦截弹窗的内置浏览器（例如在微信里打开网页）也不行。</li>
+    <li><strong>在中国大陆，手机要开代理。</strong>Vex 要连 Cloudflare 和你的 workers.dev 地址，这两处在中国大陆通常连不上。</li>
+    <li><strong>大约 10 分钟。</strong></li>
+  </ul>
+  <p>不需要自己的服务器，也不用写代码；Cloudflare 和 Google 这两处都用免费额度。准备好了就去<a href="setup.html">设置</a>。</p>
+
+  <h2 id="privacy">隐私</h2>
+  <p><strong>Vex 的开发者不经手你的任何数据。</strong>这条路上没有开发者运营的服务器：表格在你的 Google 账号里运行，推送服务器在你的 Cloudflare 账号里运行，推送经 Apple 送达。开发者看不到你的提醒、feed 地址、密钥，也看不到你连了几台设备。</p>
+
+  <div class="app-text">
+    <span class="source">Vex「自建推送服务器」页底部的说明</span>
+    <p>「Vex 只向你的 Worker 发送本机的推送令牌、设备名称和 App 版本。向导里用到的 Cloudflare 令牌只发给 Cloudflare，用完即弃；feed 地址只放进你拷贝的配置码，Vex 不保存也不上传。」</p>
+  </div>
+  <p>补充一点：注册本机时，请求里还带着这台设备的推送环境（生产或开发），推送服务器要靠它把推送发到对的环境。Vex 不会把你的 V2EX 账号、Cookie 或 feed 地址发给推送服务器。不过，用「让 Vex 读取」设置的表格里记着账号标签（一般是 V2EX 用户名）：Google 表格报运行状态时会把它报给推送服务器，它也会随每条推送一起经 Apple 发到设备，Vex 用它提示 <span class="ui">「推送只覆盖 <var>用户名</var>。」</span></p>
+
+  <h3 id="where">各处各存什么</h3>
+  <div class="table-wrap">
+    <table class="stack">
+      <thead>
+        <tr><th scope="col">在哪里</th><th scope="col">保存什么</th><th scope="col">要留意的</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">这台设备上的 Vex</th>
+          <td data-label="保存什么">推送密钥只存在钥匙串里，仅限本设备，不随 iCloud 同步，换手机不会跟过去。另存推送服务器地址、注册记录（推送令牌的末 8 位与摘要、推送环境、注册时间）和最近一次读到的 Google 表格状态。</td>
+          <td data-label="要留意的">Cloudflare 令牌只在向导运行时放在内存里，用完即弃；feed 地址只放进配置码，Vex 不保存。</td>
+        </tr>
+        <tr>
+          <th scope="row">你的 Google 表格</th>
+          <td data-label="保存什么">脚本属性里有推送服务器地址、推送密钥、feed 地址和账号标签（一般是 V2EX 用户名）；另有已读提醒的摘要（不是内容）、最近一次错误（已打码）、运行时间记录等。</td>
+          <td data-label="要留意的">表格的「说明」页写着：「不要共享给别人：对方能在脚本属性里看到密钥与 feed 地址。」只读共享也别开。</td>
+        </tr>
+        <tr>
+          <th scope="row">你的 Cloudflare 账号</th>
+          <td data-label="保存什么">推送服务器的 KV 存储里有每台设备的推送令牌、推送环境、设备名称、App 版本、注册时间和注册时的密钥指纹；每台设备最近一次投递结果（30 天没更新自动过期）；表格最近一次报来的运行状态（表格里记着账号标签时也在其中，一般是 V2EX 用户名）。</td>
+          <td data-label="要留意的">不保存提醒内容。推送服务器自己写的日志里，设备令牌只有末 8 位。</td>
+        </tr>
+        <tr>
+          <th scope="row">Apple 推送服务</th>
+          <td data-label="保存什么">和所有 iOS 推送一样，推送经 Apple 送到设备，里面有标题、正文和账号标签（表格里记着时才有）。</td>
+          <td data-label="要留意的">你不需要在 Apple 那边注册或设置任何东西。</td>
+        </tr>
+        <tr>
+          <th scope="row">V2EX</th>
+          <td data-label="保存什么">会看到来自 Google 服务器的定时 feed 请求；选「让 Vex 读取」时，会看到 Vex 打开一次提醒页。</td>
+          <td data-label="要留意的">读 feed 不会把站内未读标成已读；「让 Vex 读取」打开提醒页那一次会。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 id="secrets">真正要保管好的三样</h3>
+  <ul>
+    <li><strong>配置码</strong>：里面有推送密钥，给表格的那份还有 feed 地址。Vex 不在屏幕上显示它，只经剪贴板或分享交给你。</li>
+    <li><strong>推送密钥</strong>：拿到它的人能把自己的设备注册到你的推送服务器、收到你的提醒，也能给你的设备发推送。</li>
+    <li><strong>feed 地址</strong>：拿到它的人能读到你的 V2EX 提醒。在 V2EX 提醒页「重新生成 Token」就能让旧地址作废。</li>
+  </ul>
+  <div class="callout callout-warn">
+    <strong class="callout-title">Vex 里的提醒</strong>
+    <p>「配置码相当于密码：拿到它的人能读到你的 V2EX 提醒，也能把自己的设备接到你的推送上。只发给自己；用聊天软件传的，用完把那条消息删掉。」</p>
+  </div>
+  <p>万一泄露，见<a href="manage.html#rotate">更换密钥</a>。另外，点开推送时，Vex 只会打开 <code>https</code> 的 v2ex.com（或 www.v2ex.com）页面，其他链接一律忽略。但推送的标题和正文可以是任意文字：收到不像 V2EX 提醒的推送，别照着里面说的做，并尽快更换密钥。</p>
+
+  <h2 id="free">免费额度</h2>
+  <p>全程只用免费额度：Cloudflare Workers 免费套餐每个账号每天可处理 10 万次请求，Google 免费账号的定时脚本每天可运行 90 分钟；表格脚本会自己记账，快用到 Google 的上限时自动放慢检查。详见<a href="manage.html#quota">检查频率与配额</a>。</p>
+
+  <h2 id="pages">各页内容</h2>
+  <ul class="page-cards">
+    <li><a href="setup.html"><span class="card-title">设置</span><span class="card-desc">从入口到两步向导，含 Google「尚未验证」提示怎么点、已有推送服务器时怎么选。</span></a></li>
+    <li><a href="manage.html"><span class="card-title">日常使用</span><span class="card-desc">添加另一台设备、更换密钥、更新 Worker、更新 Google 表格、查看状态、配额。</span></a></li>
+    <li><a href="troubleshooting.html"><span class="card-title">常见提示与排查</span><span class="card-desc">Vex 与表格里各种提示的原文、含义和做法；推送没到时按顺序查。</span></a></li>
+    <li><a href="remove.html"><span class="card-title">停用与删除</span><span class="card-desc">只停这台设备、所有设备都暂停，或者按顺序彻底删除。</span></a></li>
+  </ul>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <nav aria-label="页脚导航">
+      <ul>
+        <li><a href="index.html">首页</a></li>
+        <li><a href="setup.html">设置</a></li>
+        <li><a href="manage.html">日常使用</a></li>
+        <li><a href="troubleshooting.html">常见提示与排查</a></li>
+        <li><a href="remove.html">停用与删除</a></li>
+      </ul>
+    </nav>
+    <p>最后更新：2026-10-15</p>
+    <p>本站只是说明文档，Vex 与开发者不经手你的任何数据。</p>
+  </div>
+</footer>
+</body>
+</html>

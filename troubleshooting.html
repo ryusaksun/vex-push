@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Vex 自建推送的常见提示与排查：Vex 状态页、配置向导和 Google 表格里各种提示的原文、含义和做法。">
+<title>常见提示与排查 · Vex 自建推送</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"></span>Vex 自建推送</a>
+    <nav class="site-nav" aria-label="页面导航">
+      <ul>
+        <li><a href="index.html">首页</a></li>
+        <li><a href="setup.html">设置</a></li>
+        <li><a href="manage.html">日常使用</a></li>
+        <li><a href="troubleshooting.html" aria-current="page">常见提示与排查</a></li>
+        <li><a href="remove.html">停用与删除</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+  <h1>常见提示与排查</h1>
+  <p class="lead">推送没到，或者在 Vex 和表格里看到看不懂的提示时，看这一页。按提示出现的地方分组。每条先写界面原文，再写含义和怎么办。原文里 <var>带虚线</var> 的部分，实际显示的是具体的原因、数字或用户名。</p>
+
+  <nav class="toc" aria-labelledby="toc-title">
+    <p class="toc-title" id="toc-title">本页目录</p>
+    <ol>
+      <li><a href="#checklist">推送没到：按顺序查</a></li>
+      <li><a href="#status-row">状态页「状态」一行</a></li>
+      <li><a href="#connect-failed">「连接失败」下面的说明</a></li>
+      <li><a href="#sheet-notes">「Google 表格」一行与下面的提示</a></li>
+      <li><a href="#other-notes">状态页的其他提示</a></li>
+      <li><a href="#test-push">「发送测试推送」失败</a></li>
+      <li><a href="#config-code">粘贴配置码时</a></li>
+      <li><a href="#deploy">向导第 1 步：部署时的报错</a></li>
+      <li><a href="#wizard-sheet">向导第 2 步的提示</a></li>
+      <li><a href="#sheet-dialogs">Google 表格里的提示</a></li>
+      <li><a href="#mainland">在中国大陆连不上</a></li>
+    </ol>
+  </nav>
+
+  <h2 id="checklist">推送没到：按顺序查</h2>
+  <ol class="steps">
+    <li>
+      <span class="step-title">这台设备</span>
+      <p>「自建推送服务器」页的 <span class="ui">「状态」</span>是不是 <span class="ui">「已连接」</span>？点 <span class="ui">「发送测试推送」</span>能不能收到？显示已发出却没收到的，检查 iOS 的「设置 › 通知 › Vex」是否允许通知，再看看专注模式有没有挡住。</p>
+    </li>
+    <li>
+      <span class="step-title">Google 表格的状态</span>
+      <p>同一页 <span class="ui">「Google 表格」</span>一行多久前活动？下面有没有提示？对照<a href="#sheet-notes">下文</a>处理。</p>
+    </li>
+    <li>
+      <span class="step-title">表格本身</span>
+      <p>在表格里点 <span class="ui">「Vex 推送 › 查看状态」</span>：第一行是不是 <span class="ui">「正在运行（每 <var>N</var> 分钟）」</span>？有没有推送没送出去的那一行、最近一次错误是什么？对照<a href="#sheet-dialogs">表格里的提示</a>处理。</p>
+    </li>
+    <li>
+      <span class="step-title">账号对不对</span>
+      <p>推送只覆盖设置表格时那个 V2EX 账号。设置表格时选了「让 Vex 读取」的，Vex 里登录的是别的账号时，状态页会提示 <span class="ui">「推送只覆盖 <var>用户名</var>。」</span>选「我到电脑上自己复制」的，表格里一般没有账号标签，也就没有这条提示，要自己确认表格里用的是哪个账号的 feed 地址。</p>
+    </li>
+    <li>
+      <span class="step-title">是不是刚设置好</span>
+      <p>粘贴配置码时 feed 里已有的提醒都记为已读，只有之后来的新提醒才推送。表格默认每分钟检查一次，降频时会晚几分钟。</p>
+    </li>
+  </ol>
+
+  <h2 id="status-row">状态页「状态」一行</h2>
+  <div class="table-wrap">
+    <table class="stack">
+      <thead>
+        <tr><th scope="col">显示</th><th scope="col">含义</th><th scope="col">怎么办</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row"><span class="ui">「已连接」</span></th>
+          <td data-label="含义">这台设备已在推送服务器上注册。</td>
+          <td data-label="怎么办">不用做什么。</td>
+        </tr>
+        <tr>
+          <th scope="row"><span class="ui">「等待设备令牌」</span>、<span class="ui">「正在注册」</span></th>
+          <td data-label="含义">正在向系统要推送令牌、正在注册本机。</td>
+          <td data-label="怎么办">等一会儿。30 秒内没拿到令牌会改为连接失败，见下一节。</td>
+        </tr>
+        <tr>
+          <th scope="row"><span class="ui">「通知已关闭」</span></th>
+          <td data-label="含义">在系统设置里关掉了 Vex 的通知。下面一行写着 <span class="ui">「系统设置里已关闭 Vex 的通知，收不到推送。」</span></td>
+          <td data-label="怎么办">点 <span class="ui">「去开启」</span>，在系统设置里打开 Vex 的通知，回到 Vex 会自动补上连接。</td>
+        </tr>
+        <tr>
+          <th scope="row"><span class="ui">「还没允许通知」</span></th>
+          <td data-label="含义">还没问过通知权限（例如换新手机、从备份恢复之后）。下面一行写着 <span class="ui">「还没有允许 Vex 发送通知，重新连接时会询问。」</span></td>
+          <td data-label="怎么办">点 <span class="ui">「重新连接」</span>，在系统弹出的询问里选允许。</td>
+        </tr>
+        <tr>
+          <th scope="row"><span class="ui">「需要永久会员」</span></th>
+          <td data-label="含义">这次启动时确认没有永久会员权益（例如试用结束）。Vex 已请推送服务器删除本机；开关、地址和密钥都保留。</td>
+          <td data-label="怎么办">重新获得权益后会自动再注册。</td>
+        </tr>
+        <tr>
+          <th scope="row"><span class="ui">「连接失败」</span></th>
+          <td data-label="含义">具体说明另起一行，旁边有 <span class="ui">「重新连接」</span>。</td>
+          <td data-label="怎么办">见<a href="#connect-failed">下一节</a>。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p>设置页入口右侧的简短状态里，没有权益、通知被拒和连接失败都显示为 <span class="ui">「连接失败」</span>，点进去看具体是哪一种。</p>
+
+  <h2 id="connect-failed">「连接失败」下面的说明</h2>
+  <dl class="tips">
+    <div class="tip">
+      <dt>「推送服务器不认本机保存的密钥，多半是在别的设备上更换过密钥：在那台设备上点「添加另一台设备」拷贝配置码，再在这台设备上点「修改地址与密钥」粘贴。」</dt>
+      <dd>
+        <p><span class="label">含义</span>推送服务器不认这台设备保存的密钥，而这个密钥又不是这台设备刚换上的。这台设备已经收不到推送，Vex 自带的新消息通知照常。</p>
+        <p><span class="label label-do">怎么办</span>照说明做。旁边的 <span class="ui">「重新连接」</span>用的还是旧密钥，点了也连不上。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「密钥不正确」</dt>
+      <dd>
+        <p><span class="label">含义</span>推送服务器不认这个密钥（HTTP 401）。</p>
+        <p><span class="label label-do">怎么办</span>刚粘贴或填写的，多半是拷错了，重新拷贝配置码再粘贴；这台设备刚更换完密钥的，新密钥在 Cloudflare 各地生效要一会儿，过几分钟再点 <span class="ui">「重新连接」</span>。Vex 重新打开之后，「在别的设备上更换过密钥」那种情形也可能只写这一句，做法同上一条。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「无法连接服务器，请检查地址和网络；在中国大陆通常需要开启代理」</dt>
+      <dd>
+        <p><span class="label">含义</span>连不上你的推送服务器（workers.dev 地址）。</p>
+        <p><span class="label label-do">怎么办</span>检查网络；在中国大陆开代理，见<a href="#mainland">在中国大陆连不上</a>。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「服务器返回 <var>状态码</var>」、「服务器响应无法识别」</dt>
+      <dd>
+        <p><span class="label">含义</span>推送服务器出了问题，或者那个地址上已经不是 Vex 的推送服务器（例如在 Cloudflare 里删掉了 Worker）。</p>
+        <p><span class="label label-do">怎么办</span>可以先在状态页点 <span class="ui">「更新 Worker」</span>：它会用原来的密钥，把 Vex 自带的 Worker 重新部署到你的账号里（Worker 被删掉了也能重建）。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「已经登记了 20 台设备，达到上限。请先在不用的设备上断开连接」</dt>
+      <dd>
+        <p><span class="label">含义</span>一台推送服务器最多注册 20 台设备。</p>
+        <p><span class="label label-do">怎么办</span>在不用的设备上 <span class="ui">「断开连接」</span>或 <span class="ui">「移除推送服务器」</span>，再回这台设备点 <span class="ui">「重新连接」</span>。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「推送服务器的配置已更新，本机还没有重新连接」</dt>
+      <dd>
+        <p><span class="label">含义</span>重新部署或更换密钥之后，这台设备还没用新配置连接。</p>
+        <p><span class="label label-do">怎么办</span>点 <span class="ui">「重新连接」</span>。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「没有读到保存的密钥，请重新填写后连接」</dt>
+      <dd>
+        <p><span class="label">含义</span>这台设备的钥匙串里读不到推送密钥。</p>
+        <p><span class="label label-do">怎么办</span>在已连接的设备上点 <span class="ui">「添加另一台设备」</span>拷贝配置码，到这台设备上粘贴，见<a href="manage.html#add-device">添加另一台设备</a>。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「没有取得推送令牌，请检查网络后重试」、「无法取得推送令牌：<var>系统说明</var>」</dt>
+      <dd>
+        <p><span class="label">含义</span>30 秒内没从系统拿到推送令牌，或者系统拒绝给。</p>
+        <p><span class="label label-do">怎么办</span>检查网络（照系统说明处理）后点 <span class="ui">「重新连接」</span>。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「APNs 表示本机令牌无效，推送服务器已删除本机，请重新连接」、「推送服务器上没有本机，请重新连接」</dt>
+      <dd>
+        <p><span class="label">含义</span>推送服务器上已经没有这台设备的注册记录。</p>
+        <p><span class="label label-do">怎么办</span>点 <span class="ui">「重新连接」</span>。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「密钥没能存进钥匙串，请重试」</dt>
+      <dd>
+        <p><span class="label">含义</span>保存密钥时出错。</p>
+        <p><span class="label label-do">怎么办</span>再试一次。</p>
+      </dd>
+    </div>
+  </dl>
+  <p>推送服务器自己给出的其他中文说明（例如 Worker 内部错误、KV 出错），会原样显示在这里。向导部署的推送服务器，可以先试 <span class="ui">「更新 Worker」</span>。</p>
+
+  <h2 id="sheet-notes">「Google 表格」一行与下面的提示</h2>
+  <h3>这一行本身</h3>
+  <div class="table-wrap">
+    <table class="stack">
+      <thead>
+        <tr><th scope="col">显示</th><th scope="col">含义与做法</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row"><span class="ui">「<var>N</var> 分钟前活动 · 每 <var>M</var> 分钟检查」</span></th><td data-label="含义与做法">正常。表格每小时报一次状态，几十分钟前活动不奇怪。</td></tr>
+        <tr><th scope="row"><span class="ui">「正在读取…」</span></th><td data-label="含义与做法">Vex 正在向推送服务器问表格的状态。</td></tr>
+        <tr><th scope="row"><span class="ui">「还没有收到 Google 表格的状态」</span></th><td data-label="含义与做法">还没有表格报过到。页面上会有待办 <span class="ui">「还差一步：设置 Google 表格」</span>，点它接着做<a href="setup.html#step2">第 2 步</a>。</td></tr>
+        <tr><th scope="row"><span class="ui">「Worker 版本较旧」</span></th><td data-label="含义与做法">推送服务器是旧版，不报告表格状态。点 <span class="ui">「更新 Worker」</span>。</td></tr>
+        <tr><th scope="row"><span class="ui">「没有读到」</span></th><td data-label="含义与做法">这次一直没读到状态。下面另起一行 <span class="ui">「没能读到 Google 表格的状态：<var>原因</var>」</span>，带 <span class="ui">「重试」</span>；多半是连不上推送服务器，见<a href="#mainland">在中国大陆连不上</a>。</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>下面可能出现的提示</h3>
+  <p>带 <span class="ui">「去设置」</span>的，点它会进入只设置 Google 表格的向导。读 feed 失败、配置有问题、运行时出错这几条，不用再建副本，在原来那份表格里粘贴新的配置码；「Google 表格有新版」那条不一样，要先在旧表格里暂停，再从模板建新副本，见<a href="manage.html#update-sheet">更新 Google 表格</a>。</p>
+  <dl class="tips">
+    <div class="tip">
+      <dt>「有两份 Google 表格在同时检查，请在旧的那份里点「Vex 推送 › 暂停推送」。」</dt>
+      <dd>
+        <p><span class="label">含义</span>两份表格副本拿着同一个密钥在同时运行（多半是建了新副本，旧的忘了暂停）。它们共用每天 90 分钟的配额。</p>
+        <p><span class="label label-do">怎么办</span>照说明在旧的那份里暂停，之后可以删掉它。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「Google 表格读取 feed 失败，多半是在 V2EX 重新生成过 Token。请重新设置 Google 表格。」</dt>
+      <dd>
+        <p><span class="label">含义</span>表格读不到你的 feed，地址多半已经作废。</p>
+        <p><span class="label label-do">怎么办</span>点 <span class="ui">「去设置」</span>，把新的 feed 地址带到表格里。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「Google 表格里的配置有问题。请重新设置 Google 表格。」、「Google 表格运行时出错。请重新设置 Google 表格。」</dt>
+      <dd>
+        <p><span class="label label-do">怎么办</span>点 <span class="ui">「去设置」</span>，重新粘贴配置码。仍然不行的，在表格里点 <span class="ui">「Vex 推送 › 查看状态」</span>看最近一次错误。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「Google 表格最近没能把推送送出去。点「发送测试推送」看具体原因；页面提示「Worker 有新版」时先点「更新 Worker」。修好后在 Google 表格里点「Vex 推送 › 发送测试推送」，表格下次报状态（每小时一次）之后这条提示就会消失。」</dt>
+      <dd>
+        <p><span class="label">含义</span>问题在推送服务器或 Apple 那一段，表格本身没问题，所以这条不带 <span class="ui">「去设置」</span>：重新设置表格解决不了。</p>
+        <p><span class="label label-do">怎么办</span>照说明做。「发送测试推送」的失败原因见<a href="#test-push">下文</a>。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「Google 表格超过 3 小时没有活动，可能已停止。在表格里点「Vex 推送 › 查看状态」看看。」</dt>
+      <dd>
+        <p><span class="label">含义</span>表格可能被暂停了（包括换过密钥后自动暂停）、被删掉了，或者当天的 Google 配额用完了。</p>
+        <p><span class="label label-do">怎么办</span>照说明看「查看状态」第一行。暂停的照第二行恢复；配额用完的等配额重置，见<a href="manage.html#quota">配额</a>。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「更换密钥之后 Google 表格还没有来报到：在表格里点「第 2 步：粘贴配置码」，粘贴「添加另一台设备」里的配置码。」</dt>
+      <dd>
+        <p><span class="label">含义</span>换了密钥，表格还拿着旧密钥，推送发不出去。</p>
+        <p><span class="label label-do">怎么办</span>照说明做，见<a href="manage.html#rotate">更换密钥</a>。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「Google 表格有新版：先在旧表格里点「暂停推送」，再建立新副本、粘贴配置码。」</dt>
+      <dd>
+        <p><span class="label label-do">怎么办</span>见<a href="manage.html#update-sheet">更新 Google 表格</a>。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「推送只覆盖 <var>用户名</var>。」</dt>
+      <dd>
+        <p><span class="label">含义</span>表格读的是设置时那个 V2EX 账号的提醒，而 Vex 里现在登录的是别的账号。</p>
+        <p><span class="label label-do">怎么办</span>只是说明，不影响原来那个账号的推送。想改成现在这个账号，在这个账号下点 <span class="ui">「设置 Google 表格」</span>，重新读 feed 地址并在表格里粘贴新的配置码。</p>
+      </dd>
+    </div>
+  </dl>
+
+  <h2 id="other-notes">状态页的其他提示</h2>
+  <dl class="tips">
+    <div class="tip">
+      <dt>「还差一步：设置 Google 表格」</dt>
+      <dd>
+        <p><span class="label">含义</span>推送服务器有了，还没有表格报过状态。</p>
+        <p><span class="label label-do">怎么办</span>点它，接着做<a href="setup.html#step2">第 2 步</a>。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「推送服务器已就绪，但还没有东西在检查新提醒；现在仍用 Vex 自带的新消息通知。」</dt>
+      <dd>
+        <p><span class="label">含义</span>表格还没接通、停了，或者换密钥后还没报到。这期间 Vex 自带的新消息通知照常。</p>
+        <p><span class="label label-do">怎么办</span>看「Google 表格」一行下面的提示。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「Google 表格恢复正常之前，仍用 Vex 自带的新消息通知。」</dt>
+      <dd>
+        <p><span class="label">含义</span>表格在报错，推不出提醒。</p>
+        <p><span class="label label-do">怎么办</span>照「Google 表格」一行下面那条提示处理。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「Worker 有新版。」</dt>
+      <dd>
+        <p><span class="label label-do">怎么办</span>点旁边的 <span class="ui">「更新 Worker」</span>，见<a href="manage.html#update-worker">更新 Worker</a>。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「推送服务器比这个 Vex 自带的版本新，请先更新 Vex（App Store）再操作。」</dt>
+      <dd>
+        <p><span class="label">含义</span>你在别的设备上用更新的 Vex 部署或更新过推送服务器，这台设备上的 Vex 还是旧版。</p>
+        <p><span class="label label-do">怎么办</span>先到 App Store 更新这台设备上的 Vex，在那之前别点 <span class="ui">「更新 Worker」</span>、<span class="ui">「更换密钥」</span>。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「没能通知推送服务器删除本机，推送可能还会到达：<var>原因</var>」</dt>
+      <dd>
+        <p><span class="label">含义</span>断开连接或移除推送服务器时，没能连上推送服务器请它删掉本机（例如断网、没开代理）。推送服务器已经不认这台设备的密钥时不会出现这条：那种情况下它本来也不会再给这台设备推送。</p>
+        <p><span class="label label-do">怎么办</span>网络恢复后点 <span class="ui">「重试」</span>。推送服务器（Worker 和 KV）已经在 Cloudflare 里删掉了的，这条可以不管：已经没有地方保存这台设备的推送令牌，也没有推送服务器能发推送。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「这台设备没有连接推送服务器，收不到推送。地址与密钥还在，点「重新连接」即可。」</dt>
+      <dd>
+        <p><span class="label">含义</span>出现在「已断开」页：之前点过 <span class="ui">「断开连接」</span>，或者第一次设置时向导做到上传 Worker 之后就关掉了（地址与密钥在上传成功时就存下了，但还没连接）。</p>
+        <p><span class="label label-do">怎么办</span>想恢复就点 <span class="ui">「重新连接」</span>。向导做到一半离开的，连上后再点 <span class="ui">「还差一步：设置 Google 表格」</span>接着做，见<a href="setup.html#close-midway">中途关掉向导</a>。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「这台设备上没有保存密钥（换了手机或从备份恢复之后会这样）。在已连接的设备上点「添加另一台设备」，把配置码拷过来粘贴；或者重新部署。」</dt>
+      <dd>
+        <p><span class="label label-do">怎么办</span>见<a href="manage.html#new-phone">换了手机、从备份恢复之后</a>。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「消息推送属于永久会员的账号消息功能」</dt>
+      <dd>
+        <p><span class="label">含义</span>没有永久会员权益，连接类按钮不能点。试用期内这句后面会多「，试用结束后推送会停」。</p>
+      </dd>
+    </div>
+  </dl>
+
+  <h2 id="test-push">「发送测试推送」失败</h2>
+  <p>Vex 状态页的 <span class="ui">「发送测试推送」</span>只发给这台设备。失败时显示原因，括号里是原因代码：大多是 Apple 推送服务给的，<code>network_error</code>、<code>jwt_sign_failed</code> 是推送服务器自己的。</p>
+  <dl class="tips">
+    <div class="tip">
+      <dt>「还没有连接推送服务器」、「还没有取得推送令牌，请稍后再试」</dt>
+      <dd><p><span class="label label-do">怎么办</span>先让 <span class="ui">「状态」</span>变成 <span class="ui">「已连接」</span>，稍后再发。</p></dd>
+    </div>
+    <div class="tip">
+      <dt>「推送服务器暂时连不上 APNs，请稍后重试（network_error）」、「APNs 暂时无法处理推送，请稍后重试（<var>原因代码</var>）」</dt>
+      <dd><p><span class="label label-do">怎么办</span>过一会儿再试。</p></dd>
+    </div>
+    <div class="tip">
+      <dt>「推送服务器没能用 APNs 密钥签名，请检查 Worker 里的 APNs 密钥（jwt_sign_failed）」、「APNs 拒绝了推送：服务器的 APNs 密钥无效（<var>原因代码</var>）」、「APNs 拒绝了推送：服务器的推送主题与 Vex 不符（<var>原因代码</var>）」</dt>
+      <dd>
+        <p><span class="label">含义</span>推送服务器里的 APNs 密钥或配置不能用了，例如推送服务器是旧版。</p>
+        <p><span class="label label-do">怎么办</span>点 <span class="ui">「更新 Worker」</span>，再发一次测试推送。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「APNs 拒绝了推送：服务器的 APNs 密钥不能用于本机的推送环境（<var>原因代码</var>）」</dt>
+      <dd>
+        <p><span class="label">含义</span>推送服务器的 APNs 密钥和这台设备的推送环境（状态页的 <span class="ui">「推送环境」</span>一行）对不上。</p>
+        <p><span class="label label-do">怎么办</span>App Store 或 TestFlight 版的 Vex 应该是 <span class="ui">「生产」</span>环境；先试 <span class="ui">「更新 Worker」</span>。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「推送服务器没有发出推送」、「APNs 拒绝了推送（<var>原因代码</var>）」</dt>
+      <dd><p><span class="label label-do">怎么办</span>看括号里的原因代码；状态页提示 <span class="ui">「Worker 有新版。」</span>的，先点 <span class="ui">「更新 Worker」</span>再试。</p></dd>
+    </div>
+  </dl>
+  <p>显示 <span class="ui">「测试推送已发出，稍后应收到「Vex 推送测试」通知」</span>却没收到的，检查 iOS 通知设置和专注模式。</p>
+
+  <h2 id="config-code">粘贴配置码时</h2>
+  <p>在 <span class="ui">「已经有推送服务器」</span>、<span class="ui">「修改地址与密钥」</span>或「已断开」页粘贴配置码时：</p>
+  <dl class="tips">
+    <div class="tip">
+      <dt>「这不是 Vex 的配置码」</dt>
+      <dd><p><span class="label label-do">怎么办</span>剪贴板里是别的东西。回到已连接的设备重新拷贝配置码。</p></dd>
+    </div>
+    <div class="tip">
+      <dt>「配置码不完整，请回到 Vex 重新拷贝」</dt>
+      <dd><p><span class="label label-do">怎么办</span>配置码拷贝坏了或缺了一截，重新拷贝。</p></dd>
+    </div>
+    <div class="tip">
+      <dt>「配置码的版本比这里的新，请更新」</dt>
+      <dd><p><span class="label label-do">怎么办</span>配置码是更新版的 Vex 生成的。到 App Store 更新这台设备上的 Vex。</p></dd>
+    </div>
+  </dl>
+
+  <h2 id="deploy">向导第 1 步：部署时的报错</h2>
+  <p>报错写在出错那一行下面，格式是「<var>具体步骤</var>：<var>说明</var>」。具体步骤可能是：<span class="ui">「检查 Cloudflare 令牌」</span>、<span class="ui">「选择 Cloudflare 账号」</span>、<span class="ui">「准备 workers.dev 子域名」</span>、<span class="ui">「检查已有的推送服务器」</span>、<span class="ui">「准备 KV 存储」</span>、<span class="ui">「上传 Worker」</span>、<span class="ui">「开通访问地址」</span>、<span class="ui">「等它上线」</span>。</p>
+  <dl class="tips">
+    <div class="tip">
+      <dt>「Cloudflare 令牌无效或权限不够，请用「创建 Cloudflare 令牌」重新建一个」、「这个 Cloudflare 令牌看不到任何账号，请用「创建 Cloudflare 令牌」重新建一个」</dt>
+      <dd><p><span class="label label-do">怎么办</span>点 <span class="ui">「换一个 Cloudflare 令牌」</span>，再用 <span class="ui">「创建 Cloudflare 令牌」</span>重新建一个。预填的权限不要改；多个账号的在 <span class="ui">「帐户资源」</span>（Account Resources）里选上要用的那个。</p></dd>
+    </div>
+    <div class="tip">
+      <dt>「Cloudflare 要求先验证邮箱：到邮箱里点验证链接后重试」</dt>
+      <dd><p><span class="label label-do">怎么办</span>到注册 Cloudflare 的邮箱里点验证链接，再点 <span class="ui">「重试」</span>。</p></dd>
+    </div>
+    <div class="tip">
+      <dt>「请求太频繁，请过几分钟再试」</dt>
+      <dd><p><span class="label label-do">怎么办</span>过几分钟再点 <span class="ui">「重试」</span>。</p></dd>
+    </div>
+    <div class="tip">
+      <dt>「无法连接 Cloudflare，请检查网络或代理」</dt>
+      <dd><p><span class="label label-do">怎么办</span>检查网络；在中国大陆开代理，见<a href="#mainland">下文</a>。</p></dd>
+    </div>
+    <div class="tip">
+      <dt>「推送服务器还没有上线；在中国大陆通常需要开启代理」</dt>
+      <dd>
+        <p><span class="label">含义</span>Worker 已上传，但 Vex 等了 90 秒还访问不到它。括号里可能附最后一次失败的原因。</p>
+        <p><span class="label label-do">怎么办</span>开代理后点 <span class="ui">「继续等待」</span>；或者点 <span class="ui">「先保存，稍后连接」</span>（只更新 Worker 时是 <span class="ui">「先不等了」</span>），开代理后回到 Vex 会自动补上。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「连不上这个账号里的 vex-push，没法确认它就是这台设备连着的推送服务器。在中国大陆要开代理；或者换一个 Cloudflare 令牌」</dt>
+      <dd>
+        <p><span class="label">含义</span>出现在 <span class="ui">「更换密钥」</span>时：换之前要确认账号里的 <code>vex-push</code> 就是这台设备连着的那一台，没确认就不换。</p>
+        <p><span class="label label-do">怎么办</span>开代理后点 <span class="ui">「重试」</span>；令牌选错了账号的，点 <span class="ui">「换一个 Cloudflare 令牌」</span>。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>以「这台设备连着的推送服务器不在这个 Cloudflare 账号里」开头的提示</dt>
+      <dd>
+        <p><span class="label">含义</span>出现在 <span class="ui">「更新 Worker」</span>、<span class="ui">「更换密钥」</span>时：令牌所在的账号里没有这台设备连着的 <code>vex-push</code>。</p>
+        <p><span class="label label-do">怎么办</span>令牌看得到多个账号的点 <span class="ui">「重试」</span>换一个账号；否则点 <span class="ui">「换一个 Cloudflare 令牌」</span>，用推送服务器所在账号的令牌。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「推送服务器比这个 Vex 自带的版本新，请先更新 Vex（App Store）再操作」</dt>
+      <dd><p><span class="label">含义</span>上传之前就停下了，推送服务器和这台设备的连接都没有动。</p><p><span class="label label-do">怎么办</span>到 App Store 更新 Vex 后再做。</p></dd>
+    </div>
+    <div class="tip">
+      <dt>「App 里缺少推送服务器的代码，请更新 Vex 后重试」</dt>
+      <dd><p><span class="label label-do">怎么办</span>到 App Store 更新 Vex。</p></dd>
+    </div>
+    <div class="tip">
+      <dt>「推送服务器已部署，但密钥没能存进钥匙串，请重试」</dt>
+      <dd><p><span class="label label-do">怎么办</span>点 <span class="ui">「重试」</span>。</p></dd>
+    </div>
+    <div class="tip">
+      <dt>「Cloudflare 返回错误 <var>代码</var>：<var>原文</var>」</dt>
+      <dd><p><span class="label label-do">怎么办</span>后面是 Cloudflare 返回的原文（里面的令牌和密钥已被替换掉），照着处理后点 <span class="ui">「重试」</span>。</p></dd>
+    </div>
+    <div class="tip">
+      <dt>「请求被中断了，请重试」、「连接没有完成，请重试」</dt>
+      <dd><p><span class="label label-do">怎么办</span>点 <span class="ui">「重试」</span>或 <span class="ui">「重试连接」</span>。部署期间 Vex 被切到后台导致的失败，回到前台会自动重试。</p></dd>
+    </div>
+  </dl>
+
+  <h2 id="wizard-sheet">向导第 2 步的提示</h2>
+  <dl class="tips">
+    <div class="tip">
+      <dt>「没能读取 feed 地址：<var>原因</var>。已改为到电脑上自己复制。」</dt>
+      <dd>
+        <p><span class="label">含义</span>选了「让 Vex 读取」但没读到，原因可能是：<span class="ui">「先登录 V2EX」</span>、<span class="ui">「登录状态已失效，请重新登录 V2EX」</span>、<span class="ui">「V2EX 要求两步验证，请先完成验证」</span>、<span class="ui">「网络连接失败」</span>、<span class="ui">「V2EX 暂时不可用」</span>、<span class="ui">「V2EX 没有返回提醒页」</span>等。</p>
+        <p><span class="label label-do">怎么办</span>照原因处理后点 <span class="ui">「重新选择」</span>再读一次；或者就按「我到电脑上自己复制」继续，见<a href="setup.html#feed">设置</a>。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「V2EX 要求先完成人机验证，完成后会自动重试。」</dt>
+      <dd><p><span class="label label-do">怎么办</span>完成验证即可；也可以点 <span class="ui">「重试读取」</span>，或改选 <span class="ui">「我到电脑上自己复制」</span>。</p></dd>
+    </div>
+    <div class="tip">
+      <dt>「读取期间 V2EX 账号变了，请重新选择。」、「V2EX 账号已经不是 @<var>用户名</var>，请重新选择。」</dt>
+      <dd><p><span class="label">含义</span>读取期间或生成配置码之后换了 V2EX 账号，读到的地址或已生成的配置码不再属于现在的账号，作废了。</p><p><span class="label label-do">怎么办</span>重新选择 feed 地址的来源。</p></dd>
+    </div>
+    <div class="tip">
+      <dt>「还没有接通。」</dt>
+      <dd>
+        <p><span class="label">含义</span>等了 10 分钟，Vex 停止了自动检查：<span class="ui">「接通后最长约 1 分钟显示。已经停止自动检查：在表格里粘贴配置码之后，回到这里点「再查一次」。」</span></p>
+        <p><span class="label label-do">怎么办</span>在表格里做完「第 2 步：粘贴配置码」，回 Vex 点 <span class="ui">「再查一次」</span>。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「暂时查不到状态：<var>原因</var>。会接着重试。」、「上次没查到状态：<var>原因</var>。」</dt>
+      <dd><p><span class="label label-do">怎么办</span>多半是连不上推送服务器，开代理；Vex 会接着查，停止后可以点 <span class="ui">「再查一次」</span>。</p></dd>
+    </div>
+    <div class="tip">
+      <dt>「Worker 版本较旧，先更新 Worker：关掉这一页，在「自建推送服务器」里点「更新 Worker」。」</dt>
+      <dd><p><span class="label label-do">怎么办</span>照说明做，再回来设置表格。</p></dd>
+    </div>
+  </dl>
+
+  <h2 id="sheet-dialogs">Google 表格里的提示</h2>
+  <p>表格里的对话框标题都是「Vex 推送」。下面「回到 Vex › 自建推送服务器 › 设置 Google 表格，重新拷贝配置码，再点第 2 步。」这句，意思是在 Vex 的状态页点 <span class="ui">「设置 Google 表格」</span>重新生成配置码，再到表格里点 <span class="ui">「第 2 步：粘贴配置码」</span>粘贴。</p>
+  <dl class="tips">
+    <div class="tip">
+      <dt>「授权时有权限没勾选，请再点第 1 步并全部勾选。」</dt>
+      <dd><p><span class="label label-do">怎么办</span>点 <span class="ui">「第 1 步：授权（只需一次）」</span>，这次把权限全部勾选，见<a href="setup.html#unverified">「尚未验证」提示</a>。</p></dd>
+    </div>
+    <div class="tip">
+      <dt>「还没有粘贴配置码。回到 Vex › 自建推送服务器 › 设置 Google 表格，拷贝配置码，再点第 2 步。」</dt>
+      <dd><p><span class="label">含义</span>这份表格还没设置过，却留空点了确定。</p><p><span class="label label-do">怎么办</span>照说明拿配置码。</p></dd>
+    </div>
+    <div class="tip">
+      <dt>「这不是 Vex 的配置码。…」、「配置码不完整，请回到 Vex 重新拷贝，再点第 2 步。」</dt>
+      <dd><p><span class="label label-do">怎么办</span>粘贴的不是配置码，或者拷贝坏了。回 Vex 重新拷贝；用「一起分享」发过来的，拷贝最后一行或整段。</p></dd>
+    </div>
+    <div class="tip">
+      <dt>「配置码的版本比这里的新，请更新：这份表格是旧版。…」</dt>
+      <dd><p><span class="label label-do">怎么办</span>见<a href="manage.html#update-sheet">更新 Google 表格</a>。</p></dd>
+    </div>
+    <div class="tip">
+      <dt>「Worker 不认这个密钥（返回 401），多半是在 Vex 里换过密钥。…」</dt>
+      <dd><p><span class="label label-do">怎么办</span>在 Vex 里拷贝新的配置码再粘贴，见<a href="manage.html#rotate">更换密钥</a>。</p></dd>
+    </div>
+    <div class="tip">
+      <dt>「Worker 地址不对，或者那个地址上不是 Vex 的推送服务器。…」</dt>
+      <dd>
+        <p><span class="label">含义</span>配置码里的推送服务器地址找不到推送服务器。在 Cloudflare 里删掉了 Worker 之后也会这样。</p>
+        <p><span class="label label-do">怎么办</span>回 Vex 重新拷贝配置码；推送服务器被删了的，先在 Vex 里 <span class="ui">「更新 Worker」</span>重建它。不再使用的，在表格里 <span class="ui">「暂停推送」</span>。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「这不是 feed 地址：要的是 V2EX 提醒页底部「提醒系统的 Atom Feed」里那个以 .xml 结尾的地址。请再点一次第 2 步。」</dt>
+      <dd><p><span class="label label-do">怎么办</span>照说明，再点一次 <span class="ui">「第 2 步：粘贴配置码」</span>，粘贴正确的地址。</p></dd>
+    </div>
+    <div class="tip">
+      <dt>「feed 地址读不到内容：地址没复制完整，或者已经在 V2EX 重新生成过 Token。…」</dt>
+      <dd><p><span class="label">含义</span>出现在自己手填 feed 地址之后：填进去的地址读不到内容。</p><p><span class="label label-do">怎么办</span>到 V2EX 提醒页复制现在显示的地址，再点一次 <span class="ui">「第 2 步：粘贴配置码」</span>，粘贴配置码后在要 feed 地址的框里填它。</p></dd>
+    </div>
+    <div class="tip">
+      <dt>「feed 地址读不到内容，多半是在 V2EX 重新生成过 Token。回到 Vex › 自建推送服务器 › 设置 Google 表格，重新拷贝配置码，再点第 2 步。」</dt>
+      <dd><p><span class="label">含义</span>配置码里带的（用「让 Vex 读取」读到的），或者表格保存的 feed 地址已经失效。</p><p><span class="label label-do">怎么办</span>照说明，在 Vex 的状态页点 <span class="ui">「设置 Google 表格」</span>重新生成配置码，再到这份表格里点 <span class="ui">「第 2 步：粘贴配置码」</span>粘贴。选「让 Vex 读取」会读出现在的地址；选「我到电脑上自己复制」的，粘贴配置码后表格会再问 feed 地址，填 V2EX 提醒页现在显示的那个。</p></dd>
+    </div>
+    <div class="tip">
+      <dt>「另一轮检查正在运行，请过半分钟再点一次。」</dt>
+      <dd><p><span class="label label-do">怎么办</span>等半分钟再点。</p></dd>
+    </div>
+    <div class="tip">
+      <dt>「Worker 上还没有注册设备。先在 Vex 的「自建推送服务器」里连接，再发测试推送。」</dt>
+      <dd><p><span class="label label-do">怎么办</span>出现在表格的「发送测试推送」：还没有设备连到推送服务器，先在 Vex 里连接。</p></dd>
+    </div>
+    <div class="tip">
+      <dt>「已暂停：推送服务器不认这份表格里的密钥（401）」</dt>
+      <dd>
+        <p><span class="label">含义</span>「查看状态」第一行。换过密钥后这份表格一直没粘贴新的配置码，被拒绝了一阵子，于是自己暂停了检查，免得白白占用每天的运行时间。</p>
+        <p><span class="label label-do">怎么办</span>还要用这份表格的，在 Vex 里拷贝新的配置码，点 <span class="ui">「第 2 步：粘贴配置码」</span>粘贴（留空确定沿用的还是旧密钥，一样被拒）。已经换用别的副本的，不用管。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「· 推送：最近一次没送出去（<var>多久前</var>）：<var>说明</var>」</dt>
+      <dd>
+        <p><span class="label">含义</span>「查看状态」里的一行，一直显示到下一次推送成功。最近一次错误说的是同一件事时写「同上」。</p>
+        <p><span class="label label-do">怎么办</span>照说明处理（例如说明指向推送服务器的 APNs 密钥时，在 Vex 里 <span class="ui">「更新 Worker」</span>），再点表格的 <span class="ui">「发送测试推送」</span>确认；发成功了这一行当场消失。</p>
+      </dd>
+    </div>
+    <div class="tip">
+      <dt>「· Worker 版本较旧，收不到这份表格的状态，Vex 里不会显示已接通：…」、「· 注意：Worker 里还没有可用的推送密钥，App Store 版 Vex 收不到推送。…」</dt>
+      <dd><p><span class="label label-do">怎么办</span>出现在设置总结里。在 Vex 的状态页点 <span class="ui">「更新 Worker」</span>。第二条里的「推送密钥」指推送服务器向 Apple 发推送用的密钥，不是配置码里的密钥，不用你提供，更新 Worker 就会带上。</p></dd>
+    </div>
+    <div class="tip">
+      <dt>「· 这份表格的状态还没报给 Worker（<var>原因</var>）。下一轮检查会再报一次，那之后 Vex 里才显示已接通；推送不受影响。」</dt>
+      <dd><p><span class="label label-do">怎么办</span>一般等下一轮即可。</p></dd>
+    </div>
+    <div class="tip">
+      <dt><code>Service using too much computer time for one day</code></dt>
+      <dd>
+        <p><span class="label">含义</span>出现在脚本的执行记录或 Google 发来的邮件里：当天的定时运行时间用完了。</p>
+        <p><span class="label label-do">怎么办</span>等配额重置。同一个 Google 账号下有两份副本在跑的，暂停旧的那份。见<a href="manage.html#quota">配额</a>。</p>
+      </dd>
+    </div>
+  </dl>
+
+  <h2 id="mainland">在中国大陆连不上</h2>
+  <p>workers.dev 地址和 Cloudflare 的接口在中国大陆通常无法直接访问。受影响的只有 Vex 这一端：部署、等上线、注册本机和读取表格状态。表格运行在 Google 的服务器上，推送由 Apple 送达，这两段不受影响。</p>
+  <ul>
+    <li><strong>开代理</strong>：系统层面的代理，或者 Vex 设置页「网络」一节里的 <span class="ui">「代理」</span>（需要 iOS 17 或更高）。</li>
+    <li><strong>隔几天开着代理打开一次 Vex</strong>：Vex 回到前台时，注册超过 24 小时会自动续期；超过 7 天没续上，就不再算推送生效，改回自带的新消息通知。</li>
+  </ul>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <nav aria-label="页脚导航">
+      <ul>
+        <li><a href="index.html">首页</a></li>
+        <li><a href="setup.html">设置</a></li>
+        <li><a href="manage.html">日常使用</a></li>
+        <li><a href="troubleshooting.html">常见提示与排查</a></li>
+        <li><a href="remove.html">停用与删除</a></li>
+      </ul>
+    </nav>
+    <p>最后更新：2026-10-15</p>
+    <p>本站只是说明文档，Vex 与开发者不经手你的任何数据。</p>
+  </div>
+</footer>
+</body>
+</html>

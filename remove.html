@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="停用与删除 Vex 自建推送：只停这台设备、所有设备都暂停，或者按顺序彻底删除 Google 表格、Cloudflare 上的 Worker 与令牌。">
+<title>停用与删除 · Vex 自建推送</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"></span>Vex 自建推送</a>
+    <nav class="site-nav" aria-label="页面导航">
+      <ul>
+        <li><a href="index.html">首页</a></li>
+        <li><a href="setup.html">设置</a></li>
+        <li><a href="manage.html">日常使用</a></li>
+        <li><a href="troubleshooting.html">常见提示与排查</a></li>
+        <li><a href="remove.html" aria-current="page">停用与删除</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+  <h1>停用与删除</h1>
+  <p class="lead">按你想停到什么程度，分三档：只让这台设备不收、所有设备都暂停、彻底删除。</p>
+  <p>Vex 状态页的 <span class="ui">「停用推送」</span>页列的三处——Vex 里 <span class="ui">「断开连接」</span>、Google 表格里 <span class="ui">「暂停推送」</span>、V2EX 提醒页 <span class="ui">「重新生成 Token」</span>——分别对应下面的 ①、② 和 ③ 里的<a href="#v2ex-token">第 8 步</a>。其中「重新生成 Token」让原来的 feed 地址随即作废，表格也就读不到提醒了，适合配置码泄露过、或者以后不再使用的情况。</p>
+
+  <div class="table-wrap">
+    <table class="stack">
+      <thead>
+        <tr><th scope="col">档位</th><th scope="col">影响范围</th><th scope="col">能不能恢复</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row"><a href="#this-device">① 只让这台设备不收</a></th>
+          <td data-label="影响范围">只有这台设备；其他设备和 Google 表格照旧。</td>
+          <td data-label="能不能恢复">能：「重新连接」或重新粘贴配置码（只剩这一台设备时，移除后要重新部署）。</td>
+        </tr>
+        <tr>
+          <th scope="row"><a href="#pause-all">② 所有设备都暂停</a></th>
+          <td data-label="影响范围">表格不再检查新提醒，所有设备都收不到推送。</td>
+          <td data-label="能不能恢复">能：在表格里留空确定即可恢复。</td>
+        </tr>
+        <tr>
+          <th scope="row"><a href="#delete-all">③ 彻底删除</a></th>
+          <td data-label="影响范围">删除表格、Worker、存储与令牌，作废 feed 地址。</td>
+          <td data-label="能不能恢复">不能，以后要用得从头设置。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="this-device"><span class="tier">①</span>只让这台设备不收</h2>
+  <p>在这台设备的「自建推送服务器」页，有两个按钮可以选：</p>
+  <div class="table-wrap">
+    <table class="stack">
+      <thead>
+        <tr><th scope="col">项目</th><th scope="col"><span class="ui">「断开连接」</span></th><th scope="col"><span class="ui">「移除推送服务器」</span></th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">推送服务器上本机的注册记录</th>
+          <td data-label="断开连接">请推送服务器删除</td>
+          <td data-label="移除推送服务器">请推送服务器删除</td>
+        </tr>
+        <tr>
+          <th scope="row">这台设备上的地址与密钥</th>
+          <td data-label="断开连接">保留</td>
+          <td data-label="移除推送服务器">删除（连同 workers.dev 地址、Google 表格状态记录和换密钥时间）</td>
+        </tr>
+        <tr>
+          <th scope="row">之后怎么恢复</th>
+          <td data-label="断开连接">点 <span class="ui">「重新连接」</span>，一键恢复</td>
+          <td data-label="移除推送服务器">用配置码（<span class="ui">「已经有推送服务器」</span>）或重新部署</td>
+        </tr>
+        <tr>
+          <th scope="row">其他设备、Google 表格、Cloudflare 上的 Worker</th>
+          <td data-label="断开连接">不受影响</td>
+          <td data-label="移除推送服务器">不受影响</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>断开连接</h3>
+  <ol class="steps">
+    <li>在「自建推送服务器」页点 <span class="ui">「断开连接」</span>。</li>
+    <li>确认框 <span class="ui">「断开推送服务器？」</span>写着：<span class="ui">「Vex 会请推送服务器删除本机，这台设备不再收到推送。Worker 地址与密钥会保留，之后可以直接重新连接。」</span>点 <span class="ui">「断开」</span>。</li>
+  </ol>
+  <p>之后页面变成「已断开」页，想恢复时点 <span class="ui">「重新连接」</span>。这台设备改回 Vex 自带的新消息通知（如果你开着它）。</p>
+
+  <h3>移除推送服务器</h3>
+  <p><strong>先想一下</strong>：如果这是你唯一一台连着的设备，移除之后就没有地方能再拷贝配置码了；以后想再用，只能重新部署（换新密钥）。只是暂时不想收，用上面的「断开连接」。</p>
+  <ol class="steps">
+    <li>在「自建推送服务器」页点 <span class="ui">「移除推送服务器」</span>。</li>
+    <li>确认框 <span class="ui">「移除推送服务器？」</span>写着：<span class="ui">「Vex 会请推送服务器删除本机，并删掉保存的地址与密钥。Cloudflare 上的 Worker 和 Google 表格不受影响；之后要用配置码或重新部署才能再连上。」</span>点 <span class="ui">「移除」</span>。</li>
+  </ol>
+  <p>页面回到「未设置」。</p>
+
+  <div class="callout callout-note">
+    <strong class="callout-title">看到「没能通知推送服务器删除本机」</strong>
+    <p>断开或移除时连不上推送服务器（例如断网、在中国大陆没开代理），页面会显示 <span class="ui">「没能通知推送服务器删除本机，推送可能还会到达：<var>原因</var>」</span>，带 <span class="ui">「重试」</span>。连上网络后点 <span class="ui">「重试」</span>即可。推送服务器已经不认这台设备的密钥时（多半是在别的设备上换过密钥）不会出现这条，那种情况下它本来也不会再给这台设备推送。推送服务器（Worker 和 KV）已经在 Cloudflare 里删掉了的，这条可以不管。</p>
+  </div>
+
+  <h2 id="pause-all"><span class="tier">②</span>所有设备都暂停</h2>
+  <p>在 Google 表格里暂停：表格不再检查新提醒，所有设备都收不到推送，保存的配置留着，以后能一键恢复。</p>
+  <ol class="steps">
+    <li>在电脑浏览器打开你的表格副本（默认文件名「Vex 推送（副本）」）。</li>
+    <li>菜单点 <span class="ui">「Vex 推送 › 暂停推送」</span>。</li>
+    <li>确认框写着 <span class="ui">「暂停后不再检查新提醒，也就收不到推送；保存的配置会留着。」</span>和 <span class="ui">「确定暂停吗？」</span>，点确定。</li>
+    <li>看到 <span class="ui">「已暂停，不会再检查新提醒。」</span>，后面跟着恢复办法。</li>
+  </ol>
+  <ul>
+    <li><strong>恢复</strong>：在这份表格里点 <span class="ui">「第 2 步：粘贴配置码」</span>，留空直接点 <span class="ui">「确定」</span>。换过密钥、推送服务器不认这份表格的密钥时，留空不行，要粘贴新的配置码（暂停后的对话框会照这样说）。</li>
+    <li>暂停时表格不联系推送服务器，所以推送服务器连不上、甚至已经删掉时也能暂停。</li>
+    <li>各设备在 Vex 里仍是 <span class="ui">「已连接」</span>。Vex 要等表格超过 6 小时没有报到、并且读到这个状态之后，才改回自带的新消息通知；想让某台设备马上改回，就在那台设备上 <span class="ui">「断开连接」</span>。</li>
+  </ul>
+
+  <h2 id="delete-all"><span class="tier">③</span>彻底删除</h2>
+  <p>不再使用自建推送，想把各处的东西都删干净，按下面的顺序做。第 1～3 步在 Google，第 4 步在每台设备的 Vex 里，第 5～7 步在 Cloudflare，第 8 步在 V2EX。</p>
+
+  <div class="callout callout-danger">
+    <strong class="callout-title">为什么必须先在表格里「暂停推送」</strong>
+    <p>表格脚本只有在推送服务器回答「密钥不对」（HTTP 401）时才会自己暂停。Worker 删掉之后，那个地址返回的是别的错误，<strong>表格不会自己停</strong>：它会继续每隔一会儿读一次你的 feed，一直占用你 Google 账号每天 90 分钟的定时运行时间（同一账号下你的其他定时脚本也会受影响）。没有新提醒时，「查看状态」甚至还显示「正在运行」「最近一次错误：无」，看不出异样。</p>
+    <p>「暂停推送」不联系推送服务器，所以就算已经先删了 Worker，也可以回头补点。</p>
+  </div>
+
+  <ol class="checklist">
+    <li id="pause-first">
+      <h3>在表格里「暂停推送」 <span class="where-tag">Google 表格</span></h3>
+      <ol>
+        <li>在电脑浏览器打开表格副本（默认文件名「Vex 推送（副本）」，你可能改过名）。</li>
+        <li>菜单点 <span class="ui">「Vex 推送 › 暂停推送」</span>，在确认框里点确定。</li>
+        <li>以前建过好几份副本的，每一份都要这样暂停。</li>
+      </ol>
+      <p>做完可以点 <span class="ui">「Vex 推送 › 查看状态」</span>，第一行应是 <span class="ui">「已暂停」</span>。</p>
+    </li>
+
+    <li id="delete-sheet">
+      <h3>确认没有残留的触发器，再删除表格文件 <span class="where-tag">Google</span></h3>
+      <p>这一步只在彻底删除时做。只是换新版表格的，见<a href="manage.html#update-sheet">更新 Google 表格</a>：只删旧文件，别动触发器。</p>
+      <p><strong>先查触发器</strong>：第 1 步的「暂停推送」已经删掉了这份表格的定时触发器，一般已经查不到它了；再查一遍，是为了找出忘了暂停的其他副本。打开 <a href="https://script.google.com/">script.google.com</a>，点左侧的「我的触发器」（英文界面 My Triggers），这里列着你这个 Google 账号名下全部项目的触发器。看有没有属于「Vex 推送」项目（副本里脚本项目的名字）、调用 <code>poll</code> 函数的时间驱动触发器；有的话，点它右侧的「更多」，再点「删除触发器」。只删这样的，别的项目的触发器不要动。打开表格时添加菜单用的是另一种简单触发器（<code>onOpen</code>），不用处理。</p>
+      <p><strong>再删文件</strong>：打开 <a href="https://drive.google.com/">drive.google.com</a>，右键点这份表格，选「移至回收站」。回收站里的文件 30 天后会被永久删除；想马上删掉，点左侧的「回收站」，选中这份表格，点顶部的「永久删除」。</p>
+      <p>表格里的脚本绑定在这份表格上，不会单独出现在云端硬盘里，也拆不下来，删掉表格就跟着没了。参考 Google 官方说明：<a href="https://developers.google.com/apps-script/guides/triggers/installable?hl=zh-cn">管理可安装触发器</a>、<a href="https://support.google.com/drive/answer/2375102?hl=zh-Hans">删除和恢复文件</a>。</p>
+    </li>
+
+    <li id="revoke">
+      <h3>撤销 Google 账号对这个脚本的授权 <span class="where-tag">Google 账号</span></h3>
+      <p>你在「第 1 步：授权」时给过这个脚本的权限，可以在 Google 账号的第三方关联里收回：</p>
+      <ol>
+        <li>打开 <a href="https://myaccount.google.com/linkedapps">myaccount.google.com/linkedapps</a>（「关联的应用」页）。</li>
+        <li>在「有权访问您的 Google 账号」里找到这个脚本，名称应是「Vex 推送」（授权页上显示的就是这个名字）。</li>
+        <li>点「查看详情」→「撤销访问权限」→「确认」。</li>
+      </ol>
+      <p>Google 的界面写法时有变化，以你看到的为准。建过几份副本、每份都授权过的，列表里可能有几条，逐个撤销。参考 Google 官方说明：<a href="https://support.google.com/accounts/answer/13533235?hl=zh-Hans">管理第三方应用的访问权限</a>。</p>
+    </li>
+
+    <li id="remove-devices">
+      <h3>每台设备上「移除推送服务器」 <span class="where-tag">Vex</span></h3>
+      <p>在每台设备的「自建推送服务器」页点 <span class="ui">「移除推送服务器」</span>，确认框里点 <span class="ui">「移除」</span>。这会删掉这台设备上保存的地址、密钥和表格状态记录，页面回到「未设置」。</p>
+      <p>这时推送服务器还在，Vex 能请它删掉本机（在中国大陆要开代理）。连不上时会提示 <span class="ui">「没能通知推送服务器删除本机，推送可能还会到达：<var>原因</var>」</span>，开代理或等网络恢复后点 <span class="ui">「重试」</span>；实在连不上也不要紧，接下来删掉 Worker 和 KV 之后，就既没有地方保存这台设备的推送令牌，也没有推送服务器能发推送了。</p>
+    </li>
+
+    <li id="delete-worker">
+      <h3>删除 Worker <span class="where-tag">Cloudflare</span></h3>
+      <p><strong>先记下它用的 KV 命名空间</strong>（下一步要删）：在 Cloudflare 控制台打开 <a href="https://dash.cloudflare.com/?to=/:account/workers-and-pages">Workers &amp; Pages</a>，点名为 <code>vex-push</code> 的 Worker，进 Settings → Bindings，看绑定名为 <code>VEX_PUSH</code> 的 KV 指向哪个命名空间。</p>
+      <p><strong>再删除</strong>：在同一个 Worker 的 Settings 页拉到最下面，点 Delete，按提示输入 Worker 的名字 <code>vex-push</code> 确认。</p>
+      <p class="muted">以上是 Cloudflare 英文界面的名称，中文界面的叫法可能不同，Cloudflare 改版后位置也可能变化。</p>
+    </li>
+
+    <li id="delete-kv">
+      <h3>删除 KV 命名空间 <span class="where-tag">Cloudflare</span></h3>
+      <p>删除 Worker 不会连带删除它的 KV 存储，要单独删。打开控制台的 <a href="https://dash.cloudflare.com/?to=/:account/workers/kv/namespaces">Workers KV</a> 页，找到上一步记下的那个命名空间：向导建的标题是 <code>vex-push</code>，或者 <code>vex-push-</code> 后面跟 6 位小写字母和数字。删除它（删除按钮的位置以 Cloudflare 界面为准）。</p>
+      <p>删除命名空间会连同里面的全部内容一起删掉：各设备的推送令牌、设备名称、App 版本、注册时间、投递记录和表格报来的运行状态。</p>
+    </li>
+
+    <li id="delete-token">
+      <h3>删除 Cloudflare 令牌 <span class="where-tag">Cloudflare</span></h3>
+      <p>打开 <a href="https://dash.cloudflare.com/profile/api-tokens">Cloudflare 令牌管理页</a>（My Profile › API Tokens；Vex 结果页的 <span class="ui">「打开 Cloudflare 令牌管理页」</span>打开的也是这里）。找到名为 Vex Push 的令牌，点它所在行右侧的三点菜单（⋯），选择删除并确认。每次用向导部署、更新 Worker、更换密钥都要新建一个，有几个删几个。</p>
+      <p>这些令牌没有有效期，不删就一直有效。</p>
+    </li>
+
+    <li id="v2ex-token">
+      <h3>在 V2EX 重新生成 Token <span class="where-tag">V2EX</span></h3>
+      <ol>
+        <li>打开 V2EX 提醒页 <a href="https://www.v2ex.com/notifications">https://www.v2ex.com/notifications</a>（Vex「停用推送」页的 <span class="ui">「打开 V2EX 提醒页」</span>打开的也是这里）。</li>
+        <li>在电脑版页面底部找到「提醒系统的 Atom Feed」那一栏，点它下面的「重新生成 Token」。</li>
+      </ol>
+      <p>原来的 feed 地址随即作废，谁也不能再用它读到你的提醒。用手机操作的，先在浏览器里登录 V2EX，再切到桌面版网页（Safari 里选「请求桌面网站」）。如果你在别处（例如 RSS 阅读器）也用着这个 feed 地址，那里要换成新地址。</p>
+    </li>
+  </ol>
+
+  <h3>Apple 那边要做什么吗？</h3>
+  <p>不用。你没有在 Apple 那边注册或创建过任何东西；这台设备的推送令牌只存在你自己 Cloudflare 账号的 KV 里，第 6 步已经删掉了。</p>
+
+  <h3>Vex 自带的「新消息通知」</h3>
+  <p>不受影响。移除推送服务器之后，如果你开着「新消息通知」，Vex 照常用它提醒你。</p>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <nav aria-label="页脚导航">
+      <ul>
+        <li><a href="index.html">首页</a></li>
+        <li><a href="setup.html">设置</a></li>
+        <li><a href="manage.html">日常使用</a></li>
+        <li><a href="troubleshooting.html">常见提示与排查</a></li>
+        <li><a href="remove.html">停用与删除</a></li>
+      </ul>
+    </nav>
+    <p>最后更新：2026-10-15</p>
+    <p>本站只是说明文档，Vex 与开发者不经手你的任何数据。</p>
+  </div>
+</footer>
+</body>
+</html>
