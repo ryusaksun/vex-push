@@ -61,7 +61,7 @@
 
   <div class="callout callout-note">
     <strong class="callout-title">需要永久会员</strong>
-    <p>没有永久会员权益时，各页顶部（第一次进来的这一页是在底部）写着 <span class="ui">「消息推送属于永久会员的账号消息功能」</span>，开始设置、重新连接、粘贴配置码等连接类操作都不能点。试用期内可以用，顶部改写成 <span class="ui">「消息推送属于永久会员的账号消息功能，试用结束后推送会停」</span>。</p>
+    <p>没有永久会员权益时，第一次进来的这一页中央的按钮换成一把锁，底部写着 <span class="ui">「需开通永久会员」</span>；其他各页顶部写着 <span class="ui">「消息推送属于永久会员的账号消息功能」</span>，开始设置、重新连接、粘贴配置码等连接类操作都不能点。试用期内可以用，顶部改写成 <span class="ui">「消息推送属于永久会员的账号消息功能，试用结束后推送会停」</span>。</p>
     <p>试用结束后，Vex 会请推送服务器删除本机，状态变为 <span class="ui">「需要永久会员」</span>；开关、地址和密钥都保留，重新获得权益后会自动再注册。</p>
   </div>
   <p><span class="ui">「自建推送服务器」</span>和同一节里的 <span class="ui">「新消息通知」</span>开关互不依赖：推送由你自己的服务器发来，不需要 Vex 在后台检查。</p>
@@ -80,7 +80,7 @@
     <li><span class="ui">「大约 10 分钟」</span></li>
   </ul>
   <p>在中国大陆的话，手机要开代理：Vex 要连 Cloudflare 和你的 workers.dev 地址。</p>
-  <p>最后一行是 <span class="ui">「详细说明」</span>，打开的就是首页的<a href="index.html#prepare">「需要准备什么」</a>。页底是隐私说明：<span class="ui">「Vex 只向你的 Worker 发送本机的推送令牌、设备名称和 App 版本；feed 地址 Vex 不保存也不上传。」</span>（详见<a href="index.html#privacy">隐私</a>）</p>
+  <p>这一页右上角的问号图标是 <span class="ui">「详细说明」</span>，打开的就是首页的<a href="index.html#prepare">「需要准备什么」</a>。Vex 会把哪些数据发给推送服务器，见<a href="index.html#privacy">隐私</a>。</p>
   <p>准备好了点 <span class="ui">「开始」</span>。第 1 步在手机上就能做完；做到第 2 步的「在电脑上」那部分时，再坐到电脑前。</p>
 
   <h2 id="step1">第 1 步：部署推送服务器</h2>
