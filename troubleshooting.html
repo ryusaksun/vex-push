@@ -231,7 +231,7 @@
     <div class="tip" id="note-push-error">
       <dt>「Google 表格最近没能把推送送出去。点「发送测试推送」看原因；提示「Worker 有新版」时先点「更新 Worker」。」</dt>
       <dd>
-        <p><span class="label">含义</span>问题在推送服务器或 Apple 那一段，表格本身没问题，所以这条不带 <span class="ui">「去设置」</span>：重新设置表格解决不了。这条提示下面的 <span class="ui">「详细说明」</span>打开的就是这里。</p>
+        <p><span class="label">含义</span>问题在推送服务器或 Apple 那一段，表格本身没问题，所以这条不带 <span class="ui">「去设置」</span>：重新设置表格解决不了。右上角问号菜单里的 <span class="ui">「推送没送出去」</span>打开的就是这里。</p>
         <p><span class="label label-do">怎么办</span>照说明做。「发送测试推送」的失败原因见<a href="#test-push">下文</a>。修好后在 Google 表格里点 <span class="ui">「Vex 推送 › 发送测试推送」</span>，表格下次报状态（每小时一次）之后这条提示就会消失：状态页上的 <span class="ui">「发送测试推送」</span>不经过表格，提示不会因此消失。独立的脚本项目没有这个菜单，修好后在脚本编辑器里运行 <code>sendTest</code>，脚本下次报状态之后这条提示就会消失。等下一条提醒推送成功也一样。</p>
       </dd>
     </div>
@@ -247,7 +247,7 @@
       <dd>
         <p><span class="label">含义</span>换了密钥，表格还拿着旧密钥，推送发不出去。</p>
         <p><span class="label label-do">怎么办</span>表格副本照说明做，见<a href="manage.html#rotate">更换密钥</a>。</p>
-        <p><span class="label label-do">独立的脚本项目</span>它不能粘贴配置码（第二种说法，带 <span class="ui">「去设置」</span>，下面一行 <span class="ui">「详细说明」</span>打开的就是这里）。点 <span class="ui">「去设置」</span>改用表格模板重新设置，接通之后把原来那个项目停掉。</p>
+        <p><span class="label label-do">独立的脚本项目</span>它不能粘贴配置码（第二种说法，带 <span class="ui">「去设置」</span>；右上角问号菜单里的 <span class="ui">「换密钥后脚本项目怎么办」</span>打开的就是这里）。点 <span class="ui">「去设置」</span>改用表格模板重新设置，接通之后把原来那个项目停掉。</p>
       </dd>
     </div>
     <div class="tip" id="note-outdated">
@@ -379,7 +379,7 @@
   </dl>
 
   <h2 id="deploy">向导第 1 步：部署时的报错</h2>
-  <p>报错写在出错那一行下面，格式是「<var>具体步骤</var>：<var>说明</var>」。具体步骤可能是：<span class="ui">「检查 Cloudflare 令牌」</span>、<span class="ui">「选择 Cloudflare 账号」</span>、<span class="ui">「准备 workers.dev 子域名」</span>、<span class="ui">「检查已有的推送服务器」</span>、<span class="ui">「准备 KV 存储」</span>、<span class="ui">「上传 Worker」</span>、<span class="ui">「开通访问地址」</span>、<span class="ui">「等它上线」</span>。恢复按钮那一节最后一行的 <span class="ui">「详细说明」</span>打开的就是这里。</p>
+  <p>报错写在出错那一行下面，格式是「<var>具体步骤</var>：<var>说明</var>」。具体步骤可能是：<span class="ui">「检查 Cloudflare 令牌」</span>、<span class="ui">「选择 Cloudflare 账号」</span>、<span class="ui">「准备 workers.dev 子域名」</span>、<span class="ui">「检查已有的推送服务器」</span>、<span class="ui">「准备 KV 存储」</span>、<span class="ui">「上传 Worker」</span>、<span class="ui">「开通访问地址」</span>、<span class="ui">「等它上线」</span>。这时右上角的问号（<span class="ui">「详细说明」</span>）打开的就是这里。</p>
   <dl class="tips">
     <div class="tip">
       <dt>「Cloudflare 令牌无效或权限不够，请用「创建 Cloudflare 令牌」重新建一个」、「这个 Cloudflare 令牌看不到任何账号，请重新建一个」</dt>
