@@ -740,6 +740,12 @@ dl.tips {
   box-shadow: var(--shadow);
 }
 
+/* 从 App 的「详细说明」跳进来时，标出落到的那一条 */
+.tip:target {
+  border-color: var(--accent-strong);
+  box-shadow: 0 0 0 1px var(--accent-strong);
+}
+
 .tip dt {
   font-weight: 600;
   padding: 6px 10px;

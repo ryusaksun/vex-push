@@ -32,7 +32,7 @@
 
   <div class="app-text">
     <span class="source">Vex 里的介绍</span>
-    <p>「新提醒由你自己的服务器推送到这台设备：一个 Cloudflare Worker 负责发推送，一份 Google 表格定时检查 V2EX 的新提醒。两样都在你自己的账号下。」</p>
+    <p>「V2EX 新提醒由你自己账号下的 Cloudflare Worker 和 Google 表格推送到这台设备。」</p>
   </div>
 
   <div class="callout callout-note">
@@ -108,10 +108,11 @@
   <p><strong>Vex 的开发者不经手你的任何数据。</strong>这条路上没有开发者运营的服务器：表格在你的 Google 账号里运行，推送服务器在你的 Cloudflare 账号里运行，推送经 Apple 送达。开发者看不到你的提醒、feed 地址、密钥，也看不到你连了几台设备。</p>
 
   <div class="app-text">
-    <span class="source">Vex「自建推送服务器」页底部的说明</span>
-    <p>「Vex 只向你的 Worker 发送本机的推送令牌、设备名称和 App 版本。向导里用到的 Cloudflare 令牌只发给 Cloudflare，用完即弃；feed 地址只放进你拷贝的配置码，Vex 不保存也不上传。」</p>
+    <span class="source">Vex「自建推送服务器」未设置时，以及向导「开始之前」页底部的说明</span>
+    <p>「Vex 只向你的 Worker 发送本机的推送令牌、设备名称和 App 版本；feed 地址 Vex 不保存也不上传。」</p>
   </div>
-  <p>补充一点：注册本机时，请求里还带着这台设备的推送环境（生产或开发），推送服务器要靠它把推送发到对的环境。Vex 不会把你的 V2EX 账号、Cookie 或 feed 地址发给推送服务器。不过，用「让 Vex 读取」设置的表格里记着账号标签（一般是 V2EX 用户名）：Google 表格报运行状态时会把它报给推送服务器，它也会随每条推送一起经 Apple 发到设备，Vex 用它提示 <span class="ui">「推送只覆盖 <var>用户名</var>。」</span></p>
+  <p>Cloudflare 令牌那一句在向导第 1 步「再交给 Vex」下面，就在粘贴令牌的输入框下方：<span class="ui">「Cloudflare 令牌只发给 Cloudflare，部署完即丢弃，Vex 不保存；收下令牌时会清空剪贴板。」</span>feed 地址怎么读、放进哪里，在 Vex 读取之前弹出的确认框里写着：只在你确认后读取，只放进配置码，由你带到自己的 Google 表格里。</p>
+  <p>补充一点：注册本机时，请求里还带着这台设备的推送环境（生产或开发），推送服务器要靠它把推送发到对的环境。Vex 不会把你的 V2EX 账号、Cookie 或 feed 地址发给推送服务器。不过，用「让 Vex 读取」设置的表格里记着账号标签（一般是 V2EX 用户名）：Google 表格报运行状态时会把它报给推送服务器，它也会随每条推送一起经 Apple 发到设备，Vex 用它提示 <span class="ui">「推送只覆盖 <var>用户名</var> 的提醒，不是现在登录的账号。」</span></p>
 
   <h3 id="where">各处各存什么</h3>
   <div class="table-wrap">
@@ -151,13 +152,13 @@
 
   <h3 id="secrets">真正要保管好的三样</h3>
   <ul>
-    <li><strong>配置码</strong>：里面有推送密钥，给表格的那份还有 feed 地址。Vex 不在屏幕上显示它，只经剪贴板或分享交给你。</li>
+    <li><strong>配置码</strong>：里面有推送密钥，给表格的那份还有 feed 地址。拿到它的人能把自己的设备接到你的推送上，拿到给表格的那份还能读到你的 V2EX 提醒。Vex 不在屏幕上显示它，只经剪贴板或分享交给你。</li>
     <li><strong>推送密钥</strong>：拿到它的人能把自己的设备注册到你的推送服务器、收到你的提醒，也能给你的设备发推送。</li>
     <li><strong>feed 地址</strong>：拿到它的人能读到你的 V2EX 提醒。在 V2EX 提醒页「重新生成 Token」就能让旧地址作废。</li>
   </ul>
   <div class="callout callout-warn">
     <strong class="callout-title">Vex 里的提醒</strong>
-    <p>「配置码相当于密码：拿到它的人能读到你的 V2EX 提醒，也能把自己的设备接到你的推送上。只发给自己；用聊天软件传的，用完把那条消息删掉。」</p>
+    <p>「配置码相当于密码，只发给自己；用聊天软件传的，用完删掉那条消息。」</p>
   </div>
   <p>万一泄露，见<a href="manage.html#rotate">更换密钥</a>。另外，点开推送时，Vex 只会打开 <code>https</code> 的 v2ex.com（或 www.v2ex.com）页面，其他链接一律忽略。但推送的标题和正文可以是任意文字：收到不像 V2EX 提醒的推送，别照着里面说的做，并尽快更换密钥。</p>
 

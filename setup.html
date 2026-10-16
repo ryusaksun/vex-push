@@ -69,15 +69,17 @@
   <p>点 <span class="ui">「开始设置」</span>后，向导以弹出页的形式出现，导航栏标题是 <span class="ui">「设置推送」</span>，左上角的叉号是关闭。第一页是 <span class="ui">「开始之前」</span>：</p>
   <div class="app-text">
     <span class="source">Vex 里的原文</span>
-    <p>「两步把 V2EX 的新提醒推送到这台设备：先把推送服务器部署到你自己的 Cloudflare 账号，再让你自己的 Google 表格定时检查新提醒。大约 10 分钟。」</p>
+    <p>「先把推送服务器部署到你的 Cloudflare 账号，再让你的 Google 表格定时检查新提醒。」</p>
   </div>
-  <p><span class="ui">「需要准备」</span>一节列着四行：</p>
+  <p><span class="ui">「需要准备」</span>一节列着五行：</p>
   <ul>
     <li><span class="ui">「一个 Cloudflare 账号」</span>：<span class="ui">「新注册的先去邮箱点验证链接」</span></li>
     <li><span class="ui">「一个 Google 账号」</span></li>
     <li><span class="ui">「一台电脑」</span>：<span class="ui">「第 2 步要在电脑浏览器里做」</span></li>
     <li><span class="ui">「在中国大陆，手机要开代理」</span></li>
+    <li><span class="ui">「大约 10 分钟」</span></li>
   </ul>
+  <p>最后一行是 <span class="ui">「详细说明」</span>，打开的就是首页的<a href="index.html#prepare">「需要准备什么」</a>。页底是隐私说明：<span class="ui">「Vex 只向你的 Worker 发送本机的推送令牌、设备名称和 App 版本；feed 地址 Vex 不保存也不上传。」</span>（详见<a href="index.html#privacy">隐私</a>）</p>
   <p>准备好了点 <span class="ui">「开始」</span>。第 1 步在手机上就能做完；做到第 2 步的「在电脑上」那部分时，再坐到电脑前。</p>
 
   <h2 id="step1">第 1 步：部署推送服务器</h2>
@@ -88,12 +90,16 @@
   </div>
 
   <ol class="steps">
-    <li>
+    <li id="create-token">
       <span class="step-title">创建 Cloudflare 令牌</span>
-      <p>在 <span class="ui">「先创建 Cloudflare 令牌」</span>一节点 <span class="ui">「创建 Cloudflare 令牌」</span>。系统浏览器会打开 Cloudflare 的令牌页，令牌名 <span class="ui">「Vex Push」</span>和三项权限（编辑 Workers 脚本、编辑 Workers KV 存储、读取账号设置）都已经预填好。照 Vex 里的说明做：</p>
+      <p>在 <span class="ui">「先创建 Cloudflare 令牌」</span>一节点 <span class="ui">「创建 Cloudflare 令牌」</span>。系统浏览器会打开 Cloudflare 的令牌页，令牌名 <span class="ui">「Vex Push」</span>和三项权限（编辑 Workers 脚本、编辑 Workers KV 存储、读取账号设置）都已经预填好。照 Vex 里按钮下面的三步做：</p>
       <div class="app-text">
-        <p>「在浏览器里登录，拉到页面最下面点「继续以显示摘要」（Continue to summary），再点「创建令牌」（Create Token），然后点令牌旁边的复制按钮，回到 Vex。」</p>
+        <span class="source">Vex 里的三步</span>
+        <p>1.「在打开的网页里登录 Cloudflare。」</p>
+        <p>2.「拉到页面最下面，点「继续以显示摘要」（Continue to summary）。」</p>
+        <p>3.「点「创建令牌」（Create Token），再点令牌旁边的复制按钮，回到 Vex。」</p>
       </div>
+      <p>三步下面是 <span class="ui">「详细说明」</span>，打开的就是这里。补充几点：</p>
       <ul>
         <li>预填的权限不要改。</li>
         <li>没有 Cloudflare 账号的，先注册，注册完回到 Vex 再点一次 <span class="ui">「创建 Cloudflare 令牌」</span>。新账号要先去邮箱点验证链接。</li>
@@ -146,12 +152,12 @@
         <tr><th scope="row"><span class="ui">「重试」</span></th><td data-label="作用">从没做完的那一步接着做。</td></tr>
         <tr><th scope="row"><span class="ui">「换一个 Cloudflare 令牌」</span></th><td data-label="作用">换一个令牌重新粘贴，已经完成的步骤保留。令牌无效、权限不够、看不到任何账号时只有这一个按钮。</td></tr>
         <tr><th scope="row"><span class="ui">「继续等待」</span></th><td data-label="作用">推送服务器还没上线，再等一轮。</td></tr>
-        <tr><th scope="row"><span class="ui">「先保存，稍后连接」</span></th><td data-label="作用">不再等它上线，直接试着连接这台设备（地址与密钥在上传 Worker 之后就已经存好）。Vex 的说明：<span class="ui">「地址与密钥已经保存。选「先保存，稍后连接」的话，这台设备这次多半连不上，开代理后回到 Vex 会自动补上。」</span></td></tr>
+        <tr><th scope="row"><span class="ui">「先保存，稍后连接」</span></th><td data-label="作用">不再等它上线，直接试着连接这台设备（地址与密钥在上传 Worker 之后就已经存好）。Vex 的说明：<span class="ui">「地址与密钥已经保存；这台设备这次连不上的话，开代理后回到 Vex 会自动补上。」</span></td></tr>
         <tr><th scope="row"><span class="ui">「重试连接」</span></th><td data-label="作用"><span class="ui">「推送服务器已经部署好，只重试连接这台设备。」</span>不会重新部署。</td></tr>
       </tbody>
     </table>
   </div>
-  <p>各条报错的原文和做法，见<a href="troubleshooting.html#deploy">常见提示与排查 › 部署时的报错</a>。部署期间 Vex 被切到后台导致的失败，回到前台后会自动重试。</p>
+  <p>各条报错的原文和做法，见<a href="troubleshooting.html#deploy">常见提示与排查 › 部署时的报错</a>（按钮下面的 <span class="ui">「详细说明」</span>打开的就是那里；<span class="ui">「重试连接」</span>下面的打开<a href="troubleshooting.html#connect-failed">「连接失败」下面的说明</a>）。部署期间 Vex 被切到后台导致的失败，回到前台后会自动重试。</p>
 
   <h3 id="close-midway">中途关掉向导</h3>
   <p>开始上传 Worker 之后再点叉号，会先问 <span class="ui">「部署还没完成，确定离开？」</span>，可以选 <span class="ui">「继续部署」</span>或 <span class="ui">「离开」</span>，并说明：<span class="ui">「已经做完的步骤会保留，回来可以接着做（要重新粘贴 Cloudflare 令牌）。」</span>回来时从哪里接着做，看关掉的时候做到了哪一步：</p>
@@ -171,12 +177,14 @@
   </div>
 
   <div class="card">
-    <h3>这台设备上没有可用的密钥</h3>
-    <p>向导停在 <span class="ui">「已有推送服务器」</span>：<span class="ui">「这个 Cloudflare 账号里已经有推送服务器（vex-push），而这台设备没有它的密钥。」</span>给出两个按钮：<span class="ui">「重新部署」</span>和 <span class="ui">「改为粘贴配置码」</span>。</p>
+    <h3 id="existing-no-secret">这台设备上没有可用的密钥</h3>
+    <p>向导停在 <span class="ui">「已有推送服务器」</span>：<span class="ui">「账号里已经有推送服务器（vex-push），这台设备没有它的密钥。」</span>给出两个选项：<span class="ui">「重新部署」</span>和 <span class="ui">「改为粘贴配置码」</span>，各带一句说明。</p>
     <div class="app-text">
-      <span class="source">两个按钮下面的说明</span>
-      <p>「重新部署会换一个新密钥：原来连着的设备和 Google 表格都要重新粘贴配置码。不想换密钥就改为粘贴配置码：在已连接的设备上点「添加另一台设备」，把配置码拷过来粘贴。」</p>
+      <span class="source">两个选项下面的说明</span>
+      <p>「重新部署」：「会换一个新密钥，原来连着的设备和 Google 表格都要重新粘贴配置码。」</p>
+      <p>「改为粘贴配置码」：「在已连接的设备上点「添加另一台设备」，把配置码拷过来粘贴。」</p>
     </div>
+    <p>改为粘贴配置码不换密钥：Google 表格和其他设备都不受影响。</p>
     <p>怎么选：</p>
     <ul>
       <li><strong>还有别的设备连着它</strong>（例如 iPad 上已经设置好了）：选 <span class="ui">「改为粘贴配置码」</span>。向导关闭，进入 <span class="ui">「已经有推送服务器」</span>页，页顶有删除刚才那个 Cloudflare 令牌的提醒。然后照<a href="manage.html#add-device">添加另一台设备</a>拿配置码粘贴。</li>
@@ -185,10 +193,12 @@
   </div>
 
   <div class="card">
-    <h3>连不上它，没法核对</h3>
-    <p>提示 <span class="ui">「无法确认本机的密钥是否仍然有效」</span>，按钮是 <span class="ui">「开代理后重试」</span>和 <span class="ui">「按没有密钥处理」</span>：</p>
+    <h3 id="existing-unverified">连不上它，没法核对</h3>
+    <p>提示 <span class="ui">「无法确认本机的密钥是否仍然有效」</span>：账号里已经有推送服务器，但现在连不上它，没法核对本机保存的密钥。选项是 <span class="ui">「开代理后重试」</span>和 <span class="ui">「按没有密钥处理」</span>：</p>
     <div class="app-text">
-      <p>「账号里已经有推送服务器，但现在连不上它（workers.dev 在中国大陆通常要开代理），没法核对本机保存的密钥。按没有密钥处理的话，下一步可以选重新部署（换新密钥）或改为粘贴配置码。」</p>
+      <span class="source">两个选项下面的说明</span>
+      <p>「开代理后重试」：「现在连不上账号里的推送服务器；workers.dev 在中国大陆通常要开代理。」</p>
+      <p>「按没有密钥处理」：「下一步再选重新部署（换新密钥）或改为粘贴配置码。」</p>
     </div>
     <p>先开代理再点 <span class="ui">「开代理后重试」</span>；确定这台设备上本来就没有它的密钥，再选 <span class="ui">「按没有密钥处理」</span>。</p>
   </div>
@@ -197,11 +207,11 @@
   <p>页顶写着 <span class="ui">「第 2 步，共 2 步」</span>，标题 <span class="ui">「设置 Google 表格」</span>：</p>
   <div class="app-text">
     <span class="source">Vex 里的原文</span>
-    <p>「你自己的 Google 表格里有一段脚本，每隔几分钟读一次你的 V2EX 提醒，有新提醒就让推送服务器发通知。它要知道你的提醒 feed 地址。」</p>
+    <p>「你的 Google 表格每隔几分钟读一次 V2EX 提醒，有新提醒就让推送服务器发通知。」</p>
   </div>
   <div class="callout callout-note">
     <strong class="callout-title">以前建过表格副本？</strong>
-    <p>「以前建过表格副本的，直接在那份里点「第 2 步：粘贴配置码」，不用再建；要换新版表格的，先在旧的那份里点「暂停推送」。」两份副本同时运行会多用每天的配额，见<a href="manage.html#update-sheet">更新 Google 表格</a>。</p>
+    <p>「以前建过表格副本的，直接在那份里点「第 2 步：粘贴配置码」，不用再建。」要换新版表格的，先在旧的那份里点 <span class="ui">「暂停推送」</span>再建新副本：两份副本同时运行会多用每天的配额，见<a href="manage.html#update-sheet">更新 Google 表格</a>。</p>
   </div>
 
   <h3 id="feed">① 选择 feed 地址从哪里来</h3>
@@ -233,26 +243,26 @@
     <li><span class="ui">「一起分享」</span>：用分享面板把三行文字发给自己：第一行模板链接，第二行一句说明，最后一行配置码。</li>
   </ul>
   <p><strong>推荐的顺序</strong>：用登录同一 Apple 账户的 Mac 直接粘贴的，现在先只点 <span class="ui">「拷贝模板链接」</span>；配置码等做到下面 <a href="#on-computer">③ 的第 5 步</a>再回来点 <span class="ui">「拷贝配置码」</span>，免得它被模板链接覆盖，或者授权花的时间太长、超过 10 分钟失效。用别的电脑的，用 <span class="ui">「一起分享」</span>一次发给自己。</p>
-  <p>刚拷贝过的那一行右边会显示 <span class="ui">「已拷贝」</span>。怎么带过去，Vex 的说法是：<span class="ui">「登录同一 Apple 账户的 Mac 一般可以直接粘贴这里拷贝的内容；其他电脑用「一起分享」发给自己。」</span></p>
+  <p>刚拷贝过的那一行右边会显示 <span class="ui">「已拷贝」</span>。怎么带过去，这一节第一行写着：<span class="ui">「登录同一 Apple 账户的 Mac 能直接粘贴；其他电脑用「一起分享」发给自己。」</span></p>
   <p>模板链接也可以直接从这里打开：<a href="https://docs.google.com/spreadsheets/d/13R2KxcgAWWrr5kTDu-W5BEQgTXmwEOuVEMpNTykbYcY/copy">Google 表格模板「制作副本」链接</a>。它和 Vex 里拷贝的是同一个。</p>
   <div class="callout callout-warn">
     <strong class="callout-title">配置码相当于密码</strong>
-    <p>「配置码相当于密码：拿到它的人能读到你的 V2EX 提醒，也能把自己的设备接到你的推送上。只发给自己；用聊天软件传的，用完把那条消息删掉。」</p>
+    <p>「配置码相当于密码，只发给自己；用聊天软件传的，用完删掉那条消息。」拿到它的人会怎样，见<a href="index.html#secrets">真正要保管好的三样</a>。</p>
   </div>
 
   <h3 id="on-computer">③ 在电脑上</h3>
-  <p>下面每一步的第一段，与 Vex「在电脑上」一节、表格「说明」页的原文逐字相同；后面是补充说明。</p>
+  <p>下面每一步加粗的那段是表格「说明」页的原文；第 1–4 步与 Vex「在电脑上」那一步的正文加小字相同，第 5 步 Vex 写的是「回 Vex 点「拷贝配置码」，再到表格点「第 2 步：粘贴配置码」，粘贴，确定。」后面是补充说明。Vex 里五步下面的 <span class="ui">「详细说明」</span>打开的就是这里。</p>
   <ol class="steps">
     <li>
       <p><strong>在电脑浏览器打开模板链接，点「制作副本」。</strong></p>
       <p>页面标题是「复制文档」，问「要复制“Vex 推送”吗？」，并提示「系统会同时复制附加的 Apps 脚本文件及功能」；英文界面的按钮叫 Make a copy。副本会出现在你自己的 Google 云端硬盘里，文件名是「Vex 推送（副本）」。用 Chrome 这类普通浏览器，不要用会拦截弹窗的内置浏览器。</p>
     </li>
     <li>
-      <p><strong>等几秒，菜单栏最右边出现「Vex 推送」（没出现就刷新页面）。点「第 1 步：授权」→「继续」→ 选自己的 Google 账号。</strong></p>
+      <p><strong>等菜单栏最右边出现「Vex 推送」，点「第 1 步：授权」→「继续」→ 选自己的 Google 账号。要等几秒；没出现就刷新页面。</strong></p>
       <p>菜单项的全名是 <span class="ui">「第 1 步：授权（只需一次）」</span>。第一次点任何菜单项，Google 都会先要求授权，而且授权完不会接着运行，所以授权单独做成第 1 步。</p>
     </li>
     <li>
-      <p><strong>看到「Google 尚未验证此应用」：点左下角「高级」，再点「转至 Vex 推送（不安全）」。这是你刚建立的副本里的脚本，只在你自己的账号下运行，没有提交给 Google 审核，所以有这个提示。</strong></p>
+      <p><strong>看到「Google 尚未验证此应用」：点左下角「高级」，再点「转至 Vex 推送（不安全）」。这是你副本里的脚本，只在你的账号下运行，没有提交给 Google 审核。</strong></p>
       <p>为什么会有这个提示、脚本要哪些权限，见下一节<a href="#unverified">Google 的「尚未验证」提示</a>。只对用 Vex 里拷贝的、或本页给出的模板链接制作的副本这样点；下一步列出的权限如果超出下一节说的两项，点取消，不要允许。</p>
     </li>
     <li>
@@ -261,13 +271,13 @@
     </li>
     <li>
       <p><strong>回到表格点「第 2 步：粘贴配置码」，粘贴，确定。</strong></p>
-      <p>粘贴之前，先回到 Vex 点 <span class="ui">「拷贝配置码」</span>（拷贝后 10 分钟内有效）；用「一起分享」发过来的不用再拷。对话框里写着 <span class="ui">「把 Vex 里拷贝的配置码粘贴到下面，点「确定」。整段分享文字一起贴进来也可以。」</span>用「一起分享」发过来的，可以只粘最后一行，也可以整段粘进去。配置码里没有 feed 地址时，表格会再弹一个框要它（做法见上面的<a href="#feed">「我到电脑上自己复制」</a>）。</p>
+      <p>粘贴之前，先回到 Vex 点 <span class="ui">「拷贝配置码」</span>。Vex 里这一步下面的小字：<span class="ui">「拷贝后 10 分钟内有效；用「一起分享」发过去的，不用回 Vex，整段粘贴就行。」</span>对话框里写着 <span class="ui">「把 Vex 里拷贝的配置码粘贴到下面，点「确定」。整段分享文字一起贴进来也可以。」</span>用「一起分享」发过来的，可以只粘最后一行，也可以整段粘进去。配置码里没有 feed 地址时，表格会再弹一个框要它（做法见上面的<a href="#feed">「我到电脑上自己复制」</a>）。</p>
       <p>设置成功后弹出总结，第一行是 <span class="ui">「设置完成。」</span>，其中有一行 <span class="ui">「· 已经通知 Worker，Vex 里最长约 1 分钟后显示已接通。」</span>，结尾提醒：<span class="ui">「这个表格要一直留着，删掉后推送会停。」</span>当时 feed 里已有的提醒全部记为已读，之后来的新提醒才推送。</p>
     </li>
   </ol>
   <div class="app-text">
     <span class="source">Vex「在电脑上」一节底部的说明</span>
-    <p>「第 5 步粘贴的是配置码：做到这一步再回这里点「拷贝配置码」，拷贝后 10 分钟内有效；用「一起分享」发过去的，拷贝那段文字的最后一行。在电脑上粘贴完，再拷贝点别的把它覆盖掉。」</p>
+    <p>「在电脑上粘贴完配置码，再拷贝点别的把它覆盖掉。」</p>
   </div>
 
   <h3 id="wait">④ 等待接通</h3>
@@ -354,7 +364,7 @@
     </details>
     <details>
       <summary>我在 Vex 里登录了多个 V2EX 账号</summary>
-      <p>推送只覆盖设置表格时那个账号的提醒（feed 地址属于那个账号）。设置表格时选了「让 Vex 读取」的，表格里记下了账号标签；Vex 里当前登录的是别的账号时，状态页会提示 <span class="ui">「推送只覆盖 <var>用户名</var>。」</span>（<var>用户名</var>是表格里记下的那个账号）。选「我到电脑上自己复制」的，表格里一般没有账号标签，也就没有这条提示，要自己确认表格里用的是哪个账号的 feed 地址。</p>
+      <p>推送只覆盖设置表格时那个账号的提醒（feed 地址属于那个账号）。设置表格时选了「让 Vex 读取」的，表格里记下了账号标签；Vex 里当前登录的是别的账号时，状态页会提示 <span class="ui">「推送只覆盖 <var>用户名</var> 的提醒，不是现在登录的账号。」</span>（<var>用户名</var>是表格里记下的那个账号）。选「我到电脑上自己复制」的，表格里一般没有账号标签，也就没有这条提示，要自己确认表格里用的是哪个账号的 feed 地址。</p>
     </details>
     <details>
       <summary>我已经在另一台设备上设置好了</summary>

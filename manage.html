@@ -53,7 +53,7 @@
     <li><span class="ui">「状态」</span>一节，见下表。</li>
     <li><span class="ui">「设置 Google 表格」</span>、<span class="ui">「更新 Worker」</span>、<span class="ui">「更换密钥」</span>。</li>
     <li><span class="ui">「添加另一台设备」</span>、<span class="ui">「修改地址与密钥」</span>、<span class="ui">「停用推送」</span>。</li>
-    <li><span class="ui">「断开连接」</span>、<span class="ui">「移除推送服务器」</span>，最下面是隐私说明。</li>
+    <li><span class="ui">「断开连接」</span>、<span class="ui">「移除推送服务器」</span>。</li>
   </ol>
 
   <div class="table-wrap">
@@ -110,7 +110,7 @@
   </ul>
   <p>任一条不满足（例如表格没接通、停了超过 6 小时、读 feed 失败、推送送不出去、注册过期），Vex 就照常发自带的通知；前提是你打开了「新消息通知」开关，它关着时没有后台检查。状态页上的说明分两种：</p>
   <ul>
-    <li>表格还没接通、停了，或者换密钥后还没报到：<span class="ui">「推送服务器已就绪，但还没有东西在检查新提醒；现在仍用 Vex 自带的新消息通知。」</span></li>
+    <li>表格还没接通、停了，或者换密钥后还没报到：<span class="ui">「还没有东西在检查新提醒，现在仍用 Vex 自带的新消息通知。」</span></li>
     <li>表格在报错（读 feed 失败、推送送不出去等）：<span class="ui">「Google 表格恢复正常之前，仍用 Vex 自带的新消息通知。」</span>原因见「Google 表格」一行下面的提示。</li>
   </ul>
   <div class="callout callout-note">
@@ -130,9 +130,9 @@
   <p>这份配置码里只有推送服务器的地址和密钥，不含 feed 地址，生成时也不请求 V2EX。用粘贴按钮收下后，Vex 会清空剪贴板。粘贴的内容有问题时的提示见<a href="troubleshooting.html#config-code">排查页</a>。</p>
 
   <h3 id="new-phone">换了手机、从备份恢复之后</h3>
-  <p>推送密钥只存在原来那台设备的钥匙串里，不随备份迁移。这时页面会写：</p>
+  <p>推送密钥只存在原来那台设备的钥匙串里，不随备份迁移。这时页面顶部写着（下面的 <span class="ui">「详细说明」</span>打开的就是这里）：</p>
   <div class="app-text">
-    <p>「这台设备上没有保存密钥（换了手机或从备份恢复之后会这样）。在已连接的设备上点「添加另一台设备」，把配置码拷过来粘贴；或者重新部署。」</p>
+    <p>「这台设备上没有保存密钥。在已连接的设备上点「添加另一台设备」，把配置码拷过来粘贴；或者重新部署。」</p>
   </div>
   <ul>
     <li>还有已连接的设备：照上面的步骤拿配置码，在这一页点 <span class="ui">「粘贴配置码」</span>。</li>
@@ -140,9 +140,9 @@
   </ul>
 
   <h2 id="rotate">更换密钥</h2>
-  <p><strong>什么时候用</strong>：配置码或推送密钥可能泄露了（例如发错了人、传配置码的聊天记录没删）。状态页这三个按钮下面写着：</p>
+  <p><strong>什么时候用</strong>：配置码或推送密钥可能泄露了（例如发错了人、传配置码的聊天记录没删）。状态页这三个按钮那一节的最后一行是 <span class="ui">「详细说明」</span>，打开的就是这里；那一节下面写着：</p>
   <div class="app-text">
-    <p>「更新 Worker 沿用现在的密钥。更换密钥之后，其他设备和 Google 表格要重新粘贴配置码；配置码泄露时用它。」</p>
+    <p>「更新 Worker 不换密钥；更换密钥后，其他设备和 Google 表格都要重新粘贴配置码。」</p>
   </div>
   <div class="callout callout-warn">
     <strong class="callout-title">泄露的是给表格的那份配置码？</strong>
@@ -151,7 +151,7 @@
   <ol class="steps">
     <li>
       <span class="step-title">在状态页点「更换密钥」</span>
-      <p>向导标题是 <span class="ui">「更换密钥」</span>：<span class="ui">「重新部署并换一个新密钥。做完之后，其他设备和 Google 表格要重新粘贴配置码才能继续使用；配置码泄露时用它。」</span>照<a href="setup.html#step1">第 1 步</a>创建并粘贴 Cloudflare 令牌，令牌要选推送服务器所在的那个 Cloudflare 账号。</p>
+      <p>向导标题是 <span class="ui">「更换密钥」</span>：<span class="ui">「重新部署并换一个新密钥；之后其他设备和 Google 表格都要重新粘贴配置码。」</span>照<a href="setup.html#step1">第 1 步</a>创建并粘贴 Cloudflare 令牌，令牌要选推送服务器所在的那个 Cloudflare 账号。</p>
     </li>
     <li>
       <span class="step-title">Vex 先核对，再换</span>
@@ -159,7 +159,7 @@
     </li>
     <li>
       <span class="step-title">在结果页拿到新的配置码</span>
-      <p>结果页顶部写 <span class="ui">「密钥已更换」</span>，并有一节 <span class="ui">「密钥已更换：在 Google 表格和其他设备里重新粘贴配置码。」</span>，带 <span class="ui">「拷贝配置码」</span>和 <span class="ui">「分享」</span>。用 <span class="ui">「分享」</span>发出的文字里写明了表格和其他设备分别在哪里粘贴。</p>
+      <p>结果页顶部写 <span class="ui">「密钥已更换」</span>，并有一节 <span class="ui">「Google 表格和其他设备要重新粘贴配置码。密钥已更换，原来的配置码不能用了。」</span>，带 <span class="ui">「拷贝配置码」</span>和 <span class="ui">「分享」</span>。用 <span class="ui">「分享」</span>发出的文字里写明了表格和其他设备分别在哪里粘贴。</p>
     </li>
     <li>
       <span class="step-title">先粘贴到 Google 表格</span>
@@ -179,19 +179,19 @@
   <ul>
     <li>表格换上新密钥之前，哪台设备都收不到推送。这期间状态页提示 <span class="ui">「更换密钥之后 Google 表格还没有来报到：在表格里点「第 2 步：粘贴配置码」，粘贴「添加另一台设备」里的配置码。」</span>，Vex 自带的新消息通知照常。</li>
     <li>从换密钥到表格粘贴好新配置码之间来的提醒不会补推：重新粘贴时，当时 feed 里已有的提醒都记为已读。</li>
-    <li>没粘贴新配置码的设备从下一条推送起就收不到了。Vex 发现后，那台设备显示 <span class="ui">「连接失败」</span>，并写明出路：<span class="ui">「推送服务器不认本机保存的密钥，多半是在别的设备上更换过密钥：在那台设备上点「添加另一台设备」拷贝配置码，再在这台设备上点「修改地址与密钥」粘贴。」</span></li>
+    <li>没粘贴新配置码的设备从下一条推送起就收不到了。Vex 发现后，那台设备显示 <span class="ui">「连接失败」</span>，并写明出路：<span class="ui">「推送服务器不认本机保存的密钥，多半在别的设备上换过密钥：用那台设备的配置码重新连接。」</span>在那台设备上点 <span class="ui">「添加另一台设备」</span>拷贝配置码，再点这条提示下面的 <span class="ui">「修改地址与密钥」</span>粘贴。</li>
     <li>还拿着旧密钥的表格副本会被推送服务器拒绝，一般一两个小时内自动暂停检查，「查看状态」第一行写 <span class="ui">「已暂停：推送服务器不认这份表格里的密钥（401）」</span>。要继续用它，粘贴新的配置码即可恢复。</li>
   </ul>
 
   <h2 id="update-worker">更新 Worker</h2>
-  <p><strong>什么时候用</strong>：状态页出现 <span class="ui">「Worker 有新版。」</span>（旁边有 <span class="ui">「更新 Worker」</span>按钮），或者「Google 表格」一行写着 <span class="ui">「Worker 版本较旧」</span>。</p>
+  <p><strong>什么时候用</strong>：状态页出现 <span class="ui">「Worker 有新版」</span>（下面有 <span class="ui">「更新 Worker」</span>按钮），或者「Google 表格」一行写着 <span class="ui">「Worker 版本较旧」</span>。</p>
   <ol class="steps">
-    <li>点 <span class="ui">「更新 Worker」</span>。向导标题是 <span class="ui">「更新 Worker」</span>：<span class="ui">「把 Vex 自带的最新版 Worker 部署到你的 Cloudflare 账号里。密钥不变，其他设备和 Google 表格不受影响。」</span></li>
+    <li>点 <span class="ui">「更新 Worker」</span>。向导标题是 <span class="ui">「更新 Worker」</span>：<span class="ui">「部署 Vex 自带的最新版 Worker；密钥不变，其他设备和 Google 表格不受影响。」</span></li>
     <li>照<a href="setup.html#step1">第 1 步</a>创建并粘贴 Cloudflare 令牌（推送服务器所在的那个账号）。</li>
     <li>做完后结果页写 <span class="ui">「Worker 已更新」</span>：<span class="ui">「推送服务器已经是 Vex 自带的这一版。」</span>Vex 还会顺便读一次表格的状态。</li>
     <li>照结果页的 <span class="ui">「待办」</span>删除这次的 Cloudflare 令牌。</li>
   </ol>
-  <p>等不到上线时，这里的按钮是 <span class="ui">「继续等待」</span>和 <span class="ui">「先不等了」</span>：<span class="ui">「Worker 已经上传。是否上线，回到状态页可以再看。」</span></p>
+  <p>等不到上线时，这里的按钮是 <span class="ui">「继续等待」</span>和 <span class="ui">「先不等了」</span>：<span class="ui">「Worker 已经上传，是否上线可以回到状态页再看。」</span></p>
   <div class="callout callout-note">
     <strong class="callout-title">提示「推送服务器比这个 Vex 自带的版本新」</strong>
     <p>状态页在 <span class="ui">「更换密钥」</span>下面写着 <span class="ui">「推送服务器比这个 Vex 自带的版本新，请先更新 Vex（App Store）再操作。」</span>时，说明你在别的设备上用更新的 Vex 部署过。先到 App Store 把这台设备上的 Vex 更新到最新版，再做「更新 Worker」或「更换密钥」，否则可能把推送服务器换回旧版：Vex 上传之前会先问推送服务器的版本，问到比自带的新就停下、什么都不改；但问不到时（例如在中国大陆没开代理）拦不住。</p>
@@ -210,7 +210,7 @@
     </li>
     <li>
       <span class="step-title">在 Vex 里重新设置表格</span>
-      <p>点提示旁边的 <span class="ui">「去设置」</span>，或状态页的 <span class="ui">「设置 Google 表格」</span>，照<a href="setup.html#step2">第 2 步</a>从模板制作新副本。新副本要重新做 <span class="ui">「第 1 步：授权（只需一次）」</span>，再 <span class="ui">「第 2 步：粘贴配置码」</span>。</p>
+      <p>点提示下面的 <span class="ui">「去设置」</span>，或状态页的 <span class="ui">「设置 Google 表格」</span>，照<a href="setup.html#step2">第 2 步</a>从模板制作新副本。新副本要重新做 <span class="ui">「第 1 步：授权（只需一次）」</span>，再 <span class="ui">「第 2 步：粘贴配置码」</span>。</p>
     </li>
     <li>
       <span class="step-title">接通后删掉旧表格</span>
