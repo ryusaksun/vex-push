@@ -213,11 +213,11 @@
   </div>
 
   <h3 id="feed">① 选择 feed 地址从哪里来</h3>
-  <p><span class="ui">「feed 地址从哪里来」</span>一节有两个选择：</p>
+  <p><span class="ui">「feed 地址从哪里来」</span>一节有两个选择，点一下是选中（行尾打勾，默认选中推荐的那个），再点底部的 <span class="ui">「继续」</span>：</p>
 
   <div class="card">
-    <h4>「让 Vex 读取」</h4>
-    <p>说明：<span class="ui">「读出当前账号的 feed 地址，放进配置码。读取前会再确认一次。」</span>点了之后先弹出 <span class="ui">「读取 feed 地址？」</span>：</p>
+    <h4>「让 Vex 读取（推荐）」</h4>
+    <p>说明：<span class="ui">「读出当前账号的 feed 地址，放进配置码。」</span>选它再点 <span class="ui">「继续」</span>，先弹出 <span class="ui">「读取 feed 地址？」</span>：</p>
     <div class="app-text">
       <p>「Vex 会打开 V2EX 提醒页，读出 @<var>用户名</var> 的 feed 地址。未读消息会变成已读（消息还在「消息」页）。地址和你的用户名只放进配置码，由你带到自己的 Google 表格里，Vex 不保存也不上传。」</p>
     </div>
@@ -226,7 +226,7 @@
 
   <div class="card">
     <h4>「我到电脑上自己复制」</h4>
-    <p>说明：<span class="ui">「Vex 不请求 V2EX。在表格里粘贴配置码之后，会再问一次 feed 地址。」</span>这条路不会清掉未读。</p>
+    <p>说明：<span class="ui">「Vex 不请求 V2EX，之后在表格里填。」</span>这条路不会清掉未读。</p>
     <p>到时候表格会弹一个框要 feed 地址：在电脑浏览器登录 V2EX，打开 <a href="https://www.v2ex.com/notifications">https://www.v2ex.com/notifications</a>，把页面底部「提醒系统的 Atom Feed」里的地址粘贴进去。地址形如 <code>https://www.v2ex.com/n/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.xml</code>。</p>
     <p>没登录 V2EX 时只有这一条路，Vex 会写 <span class="ui">「先登录 V2EX，Vex 才能读取 feed 地址。」</span></p>
   </div>
@@ -285,7 +285,7 @@
     <li>从后台回到 Vex 时会立即查一次。</li>
     <li>如果显示 <span class="ui">「Worker 版本较旧，先更新 Worker：关掉这一页，在「自建推送服务器」里点「更新 Worker」。」</span>，照做后再回来设置表格，见<a href="manage.html#update-worker">更新 Worker</a>。</li>
   </ul>
-  <p>不想现在做第 2 步，可以点 <span class="ui">「稍后再做」</span>：<span class="ui">「没有设置 Google 表格之前，Vex 自带的新消息通知照常工作。」</span>之后在「自建推送服务器」页点 <span class="ui">「还差一步：设置 Google 表格」</span>接着做。</p>
+  <p>不想现在做第 2 步，可以在配置码那一页点 <span class="ui">「稍后再做」</span>（选 feed 地址来源那一页没有这个按钮），或者直接关掉向导：<span class="ui">「没有设置 Google 表格之前，Vex 自带的新消息通知照常工作。」</span>之后在「自建推送服务器」页点 <span class="ui">「还差一步：设置 Google 表格」</span>接着做。</p>
 
   <h2 id="unverified">Google 的「尚未验证」提示</h2>
   <h3>为什么会出现</h3>
