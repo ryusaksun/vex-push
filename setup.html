@@ -209,7 +209,7 @@
   </div>
   <div class="callout callout-note">
     <strong class="callout-title">以前建过表格副本？</strong>
-    <p>「以前建过表格副本的，直接在那份里点「第 2 步：粘贴配置码」，不用再建。」要换新版表格的，先在旧的那份里点 <span class="ui">「暂停推送」</span>再建新副本：两份副本同时运行会多用每天的配额，见<a href="manage.html#update-sheet">更新 Google 表格</a>。</p>
+    <p>以前建过表格副本的，直接在那份里点 <span class="ui">「第 2 步：粘贴配置码」</span>，不用再建。要换新版表格的，先在旧的那份里点 <span class="ui">「暂停推送」</span>再建新副本：两份副本同时运行会多用每天的配额，见<a href="manage.html#update-sheet">更新 Google 表格</a>。</p>
   </div>
 
   <h3 id="feed">① 选择 feed 地址从哪里来</h3>
@@ -231,7 +231,7 @@
     <p>没登录 V2EX 时只有这一条路，Vex 会写 <span class="ui">「先登录 V2EX，Vex 才能读取 feed 地址。」</span></p>
   </div>
 
-  <p>选好之后，页面显示 <span class="ui">「配置码已生成」</span>，下面一行说明它带没带 feed 地址。配置码本身不显示在屏幕上，多任务快照和截图里都不会出现。想换另一种，点 <span class="ui">「重新选择」</span>。</p>
+  <p>选好之后，页面显示 <span class="ui">「配置码已生成」</span>。配置码本身不显示在屏幕上，多任务快照和截图里都不会出现。想换另一种，点 <span class="ui">「重新选择」</span>。</p>
 
   <h3 id="carry">② 把模板链接和配置码带到电脑上</h3>
   <p><span class="ui">「带到电脑上」</span>一节有三个按钮，因为剪贴板一次只能放一样东西：</p>
@@ -241,7 +241,7 @@
     <li><span class="ui">「一起分享」</span>：用分享面板把三行文字发给自己：第一行模板链接，第二行一句说明，最后一行配置码。</li>
   </ul>
   <p><strong>推荐的顺序</strong>：用登录同一 Apple 账户的 Mac 直接粘贴的，现在先只点 <span class="ui">「拷贝模板链接」</span>；配置码等做到下面 <a href="#on-computer">③ 的第 5 步</a>再回来点 <span class="ui">「拷贝配置码」</span>，免得它被模板链接覆盖，或者授权花的时间太长、超过 10 分钟失效。用别的电脑的，用 <span class="ui">「一起分享」</span>一次发给自己。</p>
-  <p>刚拷贝过的那一行右边会显示 <span class="ui">「已拷贝」</span>。怎么带过去，这一节第一行写着：<span class="ui">「登录同一 Apple 账户的 Mac 能直接粘贴；其他电脑用「一起分享」发给自己。」</span></p>
+  <p>刚拷贝过的那一行右边会显示 <span class="ui">「已拷贝」</span>。登录同一 Apple 账户的 Mac 能直接粘贴；其他电脑用 <span class="ui">「一起分享」</span>发给自己。</p>
   <p>模板链接也可以直接从这里打开：<a href="https://docs.google.com/spreadsheets/d/13R2KxcgAWWrr5kTDu-W5BEQgTXmwEOuVEMpNTykbYcY/copy">Google 表格模板「制作副本」链接</a>。它和 Vex 里拷贝的是同一个。</p>
   <div class="callout callout-warn">
     <strong class="callout-title">配置码相当于密码</strong>
@@ -273,10 +273,7 @@
       <p>设置成功后弹出总结，第一行是 <span class="ui">「设置完成。」</span>，其中有一行 <span class="ui">「· 已经通知 Worker，Vex 里最长约 1 分钟后显示已接通。」</span>，结尾提醒：<span class="ui">「这个表格要一直留着，删掉后推送会停。」</span>当时 feed 里已有的提醒全部记为已读，之后来的新提醒才推送。</p>
     </li>
   </ol>
-  <div class="app-text">
-    <span class="source">Vex「在电脑上」一节底部的说明</span>
-    <p>「在电脑上粘贴完配置码，再拷贝点别的把它覆盖掉。」</p>
-  </div>
+  <p>在电脑上粘贴完配置码，再拷贝点别的把它覆盖掉：配置码在这台设备的剪贴板上 10 分钟后自动清掉，但到了电脑的剪贴板上不会过期。</p>
 
   <h3 id="wait">④ 等待接通</h3>
   <p>配置码生成后，Vex 在 <span class="ui">「等待接通」</span>一节自动查询表格有没有接通，显示 <span class="ui">「正在等 Google 表格接通…」</span>。在表格里粘贴成功后，最长约 1 分钟这里会显示 <span class="ui">「已接通」</span>，并自动进入结果页。</p>
@@ -285,7 +282,7 @@
     <li>从后台回到 Vex 时会立即查一次。</li>
     <li>如果显示 <span class="ui">「Worker 版本较旧，先更新 Worker：关掉这一页，在「自建推送服务器」里点「更新 Worker」。」</span>，照做后再回来设置表格，见<a href="manage.html#update-worker">更新 Worker</a>。</li>
   </ul>
-  <p>不想现在做第 2 步，可以在配置码那一页点 <span class="ui">「稍后再做」</span>（选 feed 地址来源那一页没有这个按钮），或者直接关掉向导：<span class="ui">「没有设置 Google 表格之前，Vex 自带的新消息通知照常工作。」</span>之后在「自建推送服务器」页点 <span class="ui">「还差一步：设置 Google 表格」</span>接着做。</p>
+  <p>不想现在做第 2 步，可以在配置码那一页点 <span class="ui">「稍后再做」</span>（选 feed 地址来源那一页没有这个按钮），或者直接关掉向导。没有设置 Google 表格之前，Vex 自带的新消息通知照常工作。之后在「自建推送服务器」页点 <span class="ui">「还差一步：设置 Google 表格」</span>接着做。</p>
 
   <h2 id="unverified">Google 的「尚未验证」提示</h2>
   <h3>为什么会出现</h3>
