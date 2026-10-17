@@ -32,7 +32,7 @@
 
   <div class="app-text">
     <span class="source">Vex 里的介绍</span>
-    <p>「通过 Google 脚本和 Cloudflare Worker 实现实时推送。」</p>
+    <p>「借助 Google 表格里的 Apps Script 和 Cloudflare Worker 的免费额度来实现实时推送。」</p>
   </div>
 
   <div class="callout callout-note">
@@ -102,7 +102,7 @@
     <li><strong>在中国大陆，手机要开代理。</strong>Vex 要连 Cloudflare 和你的 workers.dev 地址，这两处在中国大陆通常连不上。</li>
     <li><strong>大约 10 分钟。</strong></li>
   </ul>
-  <p>不需要自己的服务器，也不用写代码；Cloudflare 和 Google 这两处都用免费额度。准备好了就去<a href="setup.html">设置</a>。</p>
+  <p>不需要自己的服务器，也不用写代码；Cloudflare 和 Google 这两处都用免费额度（见<a href="#free">免费额度</a>）。开始之前请看一下<a href="#notes">注意事项</a>和<a href="#disclaimer">免责声明</a>。准备好了就去<a href="setup.html">设置</a>。</p>
 
   <h2 id="privacy">隐私</h2>
   <p><strong>Vex 的开发者不经手你的任何数据。</strong>这条路上没有开发者运营的服务器：表格在你的 Google 账号里运行，推送服务器在你的 Cloudflare 账号里运行，推送经 Apple 送达。开发者看不到你的提醒、feed 地址、密钥，也看不到你连了几台设备。</p>
@@ -160,7 +160,96 @@
   <p>万一泄露，见<a href="manage.html#rotate">更换密钥</a>。另外，点开推送时，Vex 只会打开 <code>https</code> 的 v2ex.com（或 www.v2ex.com）页面，其他链接一律忽略。但推送的标题和正文可以是任意文字：收到不像 V2EX 提醒的推送，别照着里面说的做，并尽快更换密钥。</p>
 
   <h2 id="free">免费额度</h2>
-  <p>全程只用免费额度：Cloudflare Workers 免费套餐每个账号每天可处理 10 万次请求，Google 免费账号的定时脚本每天可运行 90 分钟；表格脚本会自己记账，快用到 Google 的上限时自动放慢检查。详见<a href="manage.html#quota">检查频率与配额</a>。</p>
+  <p>全程只用两家的免费额度。超出免费额度只会让当天的检查或推送失败，不会自动转成付费。下表的额度照两家官方页面（2026 年 10 月核对）；「Vex 推送大概用多少」按一台设备、每分钟检查一次估算。</p>
+
+  <h3 id="free-cloudflare">Cloudflare（推送服务器）</h3>
+  <div class="table-wrap">
+    <table class="stack">
+      <thead>
+        <tr><th scope="col">项目</th><th scope="col">免费套餐的额度</th><th scope="col">Vex 推送大概用多少</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">Workers 请求</th>
+          <td data-label="免费套餐的额度">每天 100,000 次，账号里所有 Worker 共用</td>
+          <td data-label="Vex 推送大概用多少">表格每小时报一次状态、有新提醒时投递一次，Vex 每天注册一次、打开时读几次状态：通常每天几十到几百次</td>
+        </tr>
+        <tr>
+          <th scope="row">KV 读取</th>
+          <td data-label="免费套餐的额度">每天 100,000 次</td>
+          <td data-label="Vex 推送大概用多少">推送时读设备记录，Vex 读表格状态时读两条</td>
+        </tr>
+        <tr>
+          <th scope="row">KV 写入</th>
+          <td data-label="免费套餐的额度">每天 1,000 次</td>
+          <td data-label="Vex 推送大概用多少">表格每小时写一次运行状态；设备注册、投递结果有变化时才写，一般每天几十次</td>
+        </tr>
+        <tr>
+          <th scope="row">KV 删除、列举</th>
+          <td data-label="免费套餐的额度">各每天 1,000 次</td>
+          <td data-label="Vex 推送大概用多少">每批新提醒列一次设备</td>
+        </tr>
+        <tr>
+          <th scope="row">KV 存储</th>
+          <td data-label="免费套餐的额度">1 GB</td>
+          <td data-label="Vex 推送大概用多少">几 KB</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p>每天 UTC 零点（北京时间早上 8 点）重置。Workers 请求超额时，当天的推送和 Vex 里的连接都会失败（Cloudflare 返回错误 1027），重置后自动恢复；KV 超额时推送服务器报 <code>kv_error</code>。</p>
+
+  <h3 id="free-google">Google（表格脚本）</h3>
+  <div class="table-wrap">
+    <table class="stack">
+      <thead>
+        <tr><th scope="col">项目</th><th scope="col">免费账号的额度</th><th scope="col">Vex 推送大概用多少</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">定时运行的总时长</th>
+          <td data-label="免费账号的额度">每天 90 分钟，你名下所有脚本共用（公司或学校的 Workspace 账号是每天 6 小时）</td>
+          <td data-label="Vex 推送大概用多少">每分钟检查一次，实测每轮平均约 2.4 秒，一天约 58 分钟；最近 24 小时用到 70 分钟时自动放慢检查</td>
+        </tr>
+        <tr>
+          <th scope="row">网络请求</th>
+          <td data-label="免费账号的额度">每天 20,000 次</td>
+          <td data-label="Vex 推送大概用多少">每轮读一次 feed，一天约 1,440 次；另有每小时一次报状态和推送</td>
+        </tr>
+        <tr>
+          <th scope="row">单次运行</th>
+          <td data-label="免费账号的额度">最长 6 分钟</td>
+          <td data-label="Vex 推送大概用多少">一轮一般几秒；每个请求最多等 30 秒</td>
+        </tr>
+        <tr>
+          <th scope="row">定时触发器</th>
+          <td data-label="免费账号的额度">每个脚本最多 20 个</td>
+          <td data-label="Vex 推送大概用多少">只用 1 个</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Google 的额度按账号计，从第一次运行起 24 小时后重置。定时运行的时长用完后，脚本一启动就报错，这期间收不到推送。你名下还有别的定时脚本时额度更紧，可以在 Vex 里把检查频率改成每 5 分钟，见<a href="manage.html#quota">检查频率与配额</a>。</p>
+  <p>两家都可能随时调整额度，以官方页面为准：<a href="https://developers.cloudflare.com/workers/platform/limits/">Workers 限制</a>、<a href="https://developers.cloudflare.com/kv/platform/pricing/">KV 价格与额度</a>、<a href="https://developers.google.com/apps-script/guides/services/quotas">Apps Script 配额</a>。</p>
+
+  <h2 id="notes">注意事项</h2>
+  <ul>
+    <li><strong>表格副本要一直留着，别共享给别人。</strong>删掉后推送会停。只读共享也别开；能编辑的人看得到脚本里保存的推送密钥和 feed 地址。</li>
+    <li><strong>配置码相当于密码，只发给自己。</strong>用聊天软件传的，用完删掉那条消息；泄露了就<a href="manage.html#rotate">更换密钥</a>。</li>
+    <li><strong>在中国大陆，连推送服务器要开代理。</strong>Vex 要连 Cloudflare 和你的 workers.dev 地址（设置、续期、查看状态时），这两处通常直连不上；可以用 Vex 自己的代理设置（iOS 17 起）。推送本身经 Apple 送达。</li>
+    <li><strong>推送只覆盖表格检查的那个 V2EX 账号。</strong>Vex 里登录别的账号时，那个账号的新消息照旧用 Vex 自带的通知，见<a href="manage.html#active">推送生效与「新消息通知」</a>。</li>
+    <li><strong>设置完删掉 Cloudflare 令牌。</strong>Vex 用完就丢弃了，但令牌本身没有有效期，要到 Cloudflare 的令牌管理页删掉。</li>
+    <li><strong>推送不是即时的。</strong>表格按你选的频率检查（默认每分钟），快用完 Google 的额度时会自动放慢，新提醒可能晚几分钟到。</li>
+  </ul>
+
+  <h2 id="disclaimer">免责声明</h2>
+  <ol>
+    <li>自建推送是 Vex 的可选功能。推送服务器和表格脚本运行在你自己的 Cloudflare 与 Google 账号里，由你自己部署和管理；Vex 的开发者不运营任何服务器，也不经手你的数据。</li>
+    <li>Vex 与 Cloudflare、Google、Apple、V2EX 没有关联，也不代表它们。免费额度、服务条款以及服务是否可用都由各家决定，可能随时调整，以各家官方页面为准；本站写的额度只是 2026 年 10 月的数字。</li>
+    <li>推送依赖 V2EX 的提醒 feed、Google、Cloudflare 和 Apple 推送服务，任何一环出问题都可能让推送延迟或丢失。不保证每条提醒都及时、完整地送到，重要的事请以 V2EX 网站为准。</li>
+    <li>你需要自行遵守 Cloudflare 和 Google 的服务条款，并对自己账号的安全、额度和可能产生的费用负责（例如你自己把套餐升级成付费的）。</li>
+    <li>推送服务器和表格脚本按现状提供，不附带任何明示或默示的保证。在法律允许的范围内，Vex 及其开发者不对因使用或无法使用自建推送造成的任何直接或间接损失负责，包括漏收提醒、账号受限和数据泄露。</li>
+  </ol>
 
   <h2 id="pages">各页内容</h2>
   <ul class="page-cards">
