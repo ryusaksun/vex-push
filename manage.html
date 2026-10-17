@@ -71,6 +71,10 @@
           <td data-label="怎么看">正常时形如 <span class="ui">「<var>N</var> 分钟前活动 · 每 <var>M</var> 分钟检查」</span>（不到 1 分钟写 <span class="ui">「刚刚活动」</span>，更久的按小时、天）。表格每小时才报一次运行状态，显示几十分钟前活动是正常的；「每 <var>M</var> 分钟检查」是表格现在实际的检查间隔。时间按推送服务器的时钟算，不受手机时间影响。下面可能出现的提示见<a href="troubleshooting.html#sheet-notes">排查页</a>。</td>
         </tr>
         <tr>
+          <th scope="row"><span class="ui">「检查频率」</span></th>
+          <td data-label="怎么看">表格多久检查一次新提醒，点它可以改，见<a href="#quota">检查频率与配额</a>。表格接通之后才有这一行。</td>
+        </tr>
+        <tr>
           <th scope="row"><span class="ui">「推送环境」</span></th>
           <td data-label="怎么看"><span class="ui">「生产」</span>或 <span class="ui">「开发」</span>。App Store 与 TestFlight 版的 Vex 是生产环境。</td>
         </tr>
@@ -90,7 +94,7 @@
   <h3 id="sheet-status">表格里的「查看状态」</h3>
   <p>在表格菜单点 <span class="ui">「Vex 推送 › 查看状态」</span>。它只读表格自己的记录，不发网络请求。第一行是下面四种之一：</p>
   <ul>
-    <li><span class="ui">「正在运行（每 <var>N</var> 分钟）」</span></li>
+    <li><span class="ui">「正在运行（每 <var>N</var> 分钟）」</span>（每小时一次时写「每 1 小时」）</li>
     <li><span class="ui">「已暂停」</span>，第二行写着恢复办法</li>
     <li><span class="ui">「已暂停：推送服务器不认这份表格里的密钥（401）」</span>，见<a href="#rotate">更换密钥</a></li>
     <li><span class="ui">「还没有设置」</span></li>
@@ -256,6 +260,14 @@
   <h2 id="quota">检查频率与配额</h2>
   <h3>多久检查一次</h3>
   <p>表格默认<strong>每 1 分钟</strong>检查一次新提醒，并默认开着<strong>自动降频</strong>。现在实际的间隔，在 Vex 的「Google 表格」一行（「每 <var>M</var> 分钟检查」）和表格「查看状态」的第一行都能看到。</p>
+  <h3 id="poll-schedule">在 Vex 里改检查频率</h3>
+  <p>状态页的 <span class="ui">「检查频率」</span>可以选<strong>每 1 分钟、5 分钟、10 分钟、30 分钟或每 1 小时</strong>。没有 2、3 分钟：Google 表格的定时任务只支持这几种间隔。</p>
+  <ul>
+    <li>选好的存在你的推送服务器上，表格下次报运行状态时才取走，所以<strong>最长约 1 小时后生效</strong>。在那之前，这一行下面写着 <span class="ui">「Google 表格下次报状态时改用这个频率，最长约 1 小时。」</span></li>
+    <li>选的是最快的那一档：选了每 1 分钟时，快用完配额照样会自动放慢（见下文），用量降下来再恢复。</li>
+    <li>检查得越少，新提醒到得越晚，但每天用的运行时间也越少。你名下还有别的定时脚本、担心配额不够时，可以改成每 5 分钟。</li>
+    <li>要先<a href="#update-worker">更新 Worker</a>才有这一行；表格是旧版时，这一行下面会提示先<a href="#update-sheet">更新 Google 表格</a>。</li>
+  </ul>
   <ul>
     <li>读 feed 连续失败时，第 1 次失败下一轮照常再读；从第 2 次起依次等 2、4、8、16 分钟再读，之后每 30 分钟读一次，免得 V2EX 出问题时把每天的运行时间耗光。</li>
     <li>表格每小时向推送服务器报一次运行状态，每次约 0.3 秒，内容不含提醒和 feed 地址。</li>
