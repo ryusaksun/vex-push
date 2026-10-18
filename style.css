@@ -162,7 +162,7 @@ body {
   letter-spacing: 0.01em;
 }
 
-/* Vex 的 App 图标（默认的翠绿，圆角与透明边角已在图里） */
+/* Vex 的 App 图标：默认的翠绿，按 App 里的符号源文件画成平面 SVG（不带玻璃边缘的高光，深色页眉上边缘干净） */
 .brand-mark {
   display: block;
   width: 22px;
