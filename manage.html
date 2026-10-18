@@ -13,7 +13,7 @@
 
 <header class="site-header">
   <div class="wrap">
-    <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"></span>Vex 自建推送</a>
+    <a class="brand" href="index.html"><img class="brand-mark" src="vex-icon.png" alt="" width="22" height="22">Vex 自建推送</a>
     <nav class="site-nav" aria-label="页面导航">
       <ul>
         <li><a href="index.html">首页</a></li>
@@ -133,6 +133,7 @@
     <li>连上后自动退回上一页，那里就是状态页了。失败时留在本页，下面的状态节写着原因。</li>
   </ol>
   <p>这份配置码里只有推送服务器的地址和密钥，不含 feed 地址，生成时也不请求 V2EX。用粘贴按钮收下后，Vex 会清空剪贴板。粘贴的内容有问题时的提示见<a href="troubleshooting.html#config-code">排查页</a>。</p>
+  <p>换过密钥之后，原来那份 Google 表格也用这份配置码：在表格里点 <span class="ui">「Vex 推送 › 第 2 步：粘贴配置码」</span>粘贴。配置码相当于密码，只发给自己；拿到它的人会怎样，见<a href="index.html#secrets">真正要保管好的三样</a>（这一页右上角的问号打开的就是那里）。</p>
 
   <h3 id="new-phone">换了手机、从备份恢复之后</h3>
   <p>推送密钥只存在原来那台设备的钥匙串里，不随备份迁移。这时页面顶部写着（右上角问号菜单里的 <span class="ui">「换了手机、从备份恢复之后」</span>打开的就是这里）：</p>
@@ -145,10 +146,7 @@
   </ul>
 
   <h2 id="rotate">更换密钥</h2>
-  <p><strong>什么时候用</strong>：配置码或推送密钥可能泄露了（例如发错了人、传配置码的聊天记录没删）。状态页右上角问号菜单里的 <span class="ui">「更新 Worker 与更换密钥」</span>打开的就是这里；这三个按钮那一节下面写着：</p>
-  <div class="app-text">
-    <p>「更新 Worker 不换密钥；更换密钥后，其他设备和 Google 表格都要重新粘贴配置码。」</p>
-  </div>
+  <p><strong>什么时候用</strong>：配置码或推送密钥可能泄露了（例如发错了人、传配置码的聊天记录没删）。状态页右上角问号菜单里的 <span class="ui">「更新 Worker 与更换密钥」</span>打开的就是这里。只是 Worker 有新版、不用换密钥的，用<a href="#update-worker">更新 Worker</a>，其他设备和 Google 表格不受影响。</p>
   <div class="callout callout-warn">
     <strong class="callout-title">泄露的是给表格的那份配置码？</strong>
     <p>那份配置码里还有 feed 地址，只换密钥不够。先到 V2EX 提醒页 <a href="remove.html#v2ex-token">「重新生成 Token」</a>让旧地址作废，再做下面的更换密钥；第 4 步改为在 Vex 的状态页点 <span class="ui">「设置 Google 表格」</span>，把带新 feed 地址的配置码粘贴到原来那份表格里（点 <span class="ui">「第 2 步：粘贴配置码」</span>）。这样表格只用粘贴一次。</p>
