@@ -53,6 +53,10 @@
   --tag-text: #273486;
   --mark-bg: rgba(255, 214, 2, 0.32);
 
+  /* 深浅色切换按钮：浅色时显示月亮（点了切到深色），深色时显示太阳 */
+  --toggle-moon: block;
+  --toggle-sun: none;
+
   --radius: 14px;
   --radius-sm: 10px;
 
@@ -61,8 +65,10 @@
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
 }
 
+/* 深色：系统是深色且没在右上角手动选浅色时，或者手动选了深色时。
+   两组数值相同（老 Safari 不支持 light-dark()，只能写两遍），改一处要两处一起改。 */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --bg: #111110;
     --surface: #1a1a19;
     --surface-2: #232322;
@@ -107,7 +113,69 @@
     --tag-bg: rgba(132, 157, 255, 0.15);
     --tag-text: #b6c4ff;
     --mark-bg: rgba(255, 214, 2, 0.22);
+
+    --toggle-moon: none;
+    --toggle-sun: block;
   }
+}
+
+:root[data-theme="dark"] {
+  --bg: #111110;
+  --surface: #1a1a19;
+  --surface-2: #232322;
+  --text: #eeeeec;
+  --text-2: #d0cec8;
+  --text-3: #b5b3ad;
+  --border: #2f2f2c;
+  --border-strong: #494844;
+
+  --hairline: rgba(255, 255, 255, 0.24);
+  --shadow: 0 0 1px var(--hairline), 0 1px 6px rgba(0, 0, 0, 0.3);
+  --shadow-raised: 0 0 1px rgba(255, 255, 255, 0.34), 0 6px 18px rgba(0, 0, 0, 0.45);
+  --dash: rgba(255, 250, 233, 0.26);
+  --tint: rgba(246, 246, 245, 0.08);
+
+  --ink: #eeeeec;
+  --ink-on: #111110;
+
+  --accent: #33b074;
+  --accent-strong: #3dd68c;
+  --accent-soft: #132d21;
+
+  --link: #3dd68c;
+  --link-line: rgba(61, 214, 140, 0.45);
+  --link-hover: #b1f1cb;
+  --focus: #849dff;
+
+  --quote-bg: #211d14;
+  --quote-hairline: rgba(255, 236, 196, 0.2);
+  --quote-label: #c9a877;
+
+  --note-bg: #161b2c;
+  --note-mark: #5472e4;
+  --note-title: #a8b8ff;
+  --warn-bg: #261b15;
+  --warn-mark: #bf896f;
+  --warn-title: #e8b394;
+  --danger-bg: #2a1416;
+  --danger-mark: #e5484d;
+  --danger-title: #ff9592;
+
+  --tag-bg: rgba(132, 157, 255, 0.15);
+  --tag-text: #b6c4ff;
+  --mark-bg: rgba(255, 214, 2, 0.22);
+
+  --toggle-moon: none;
+  --toggle-sun: block;
+}
+
+/* 手动选的那种也告诉浏览器，滚动条、表单控件跟着变 */
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
 }
 
 *,
@@ -173,6 +241,16 @@ body {
   border-radius: 4px;
 }
 
+/* 本身有圆角的控件，键盘选中时保持原来的形状 */
+.site-nav a:focus-visible,
+.theme-toggle:focus-visible {
+  border-radius: 999px;
+}
+
+.page-cards a:focus-visible {
+  border-radius: var(--radius);
+}
+
 /* 虚线分隔：页眉下沿、h2 上沿、hr、页脚上沿共用 */
 .site-header .wrap::after,
 h2,
@@ -197,8 +275,7 @@ hr,
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px 20px;
+  gap: 8px 12px;
   position: relative;
   padding-top: 22px;
   padding-bottom: 14px;
@@ -234,7 +311,7 @@ hr,
 
 .site-nav ul {
   list-style: none;
-  margin: 0 -10px 0 0;
+  margin: 0;
   padding: 0;
   display: flex;
   flex-wrap: wrap;
@@ -268,9 +345,67 @@ hr,
   font-weight: 600;
 }
 
-@media (max-width: 559px) {
-  .site-nav ul {
-    margin: 0;
+/* 一行放得下时：Logo 在左，导航和切换按钮靠右 */
+.site-nav {
+  order: 1;
+  margin-left: auto;
+}
+
+/* 深浅色切换按钮（theme.js 去掉 hidden 后才出现，不开脚本就不显示） */
+.theme-toggle {
+  order: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  margin: 0 -8px 0 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-3);
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.theme-toggle:hover {
+  background: var(--tint);
+  color: var(--text);
+}
+
+.theme-toggle[hidden] {
+  display: none;
+}
+
+.theme-toggle svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.theme-toggle .icon-moon {
+  display: var(--toggle-moon);
+}
+
+.theme-toggle .icon-sun {
+  display: var(--toggle-sun);
+}
+
+/* 一行放不下：Logo 和按钮一行，导航单独一行 */
+@media (max-width: 719px) {
+  .theme-toggle {
+    order: 1;
+    margin-left: auto;
+  }
+
+  .site-nav {
+    order: 2;
+    flex-basis: 100%;
+    margin-left: 0;
   }
 }
 
@@ -1074,10 +1209,20 @@ details > :last-child {
     background: linear-gradient(to bottom, var(--dash) 50%, transparent 50%) left top / 1px 8px repeat-y;
   }
 
+  /* 与站名同一行、靠正文右缘；上边距让它和站名垂直居中对齐 */
+  .theme-toggle {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+    align-self: center;
+    margin: 8px 16px 0 0;
+  }
+
   .site-nav {
     grid-column: 2;
     grid-row: 2;
     align-self: start;
+    margin-left: 0;
     position: sticky;
     top: 0;
     max-height: 100vh;
@@ -1092,10 +1237,14 @@ details > :last-child {
     margin: 0;
   }
 
+  .site-nav a,
+  .site-nav a:focus-visible {
+    border-radius: 8px;
+  }
+
   .site-nav a {
     display: block;
     padding: 6px 12px;
-    border-radius: 8px;
     font-size: 0.95rem;
   }
 
@@ -1157,6 +1306,7 @@ details > :last-child {
 
 @media print {
   .site-header nav,
+  .theme-toggle,
   .skip-link {
     display: none;
   }
